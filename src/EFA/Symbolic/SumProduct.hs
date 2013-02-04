@@ -22,7 +22,7 @@ We might use a custom Map type.
 -}
 data Term a =
      Atom a
-   | Sum (Map (Product a) Rational)
+   | Sum (Map (Product a) Rational) -- coefficents
    deriving (Show, Eq, Ord)
 
 {-
@@ -33,7 +33,7 @@ Otherwise they can be fused with the surrounding product.
 It would be cool if we could express this with types.
 -}
 newtype Product a =
-   Product (Map (Term a) Integer)
+   Product (Map (Term a) Integer) -- exponents
    deriving (Show, Eq, Ord)
 
 instance Ord a => Monoid (Product a) where

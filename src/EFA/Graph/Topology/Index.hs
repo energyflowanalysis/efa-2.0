@@ -65,6 +65,7 @@ data Y a = Y !Record !(SecNode a) !(SecNode a) deriving (Show, Ord, Eq)
 data DY a = DY !Record !(SecNode a) !(SecNode a) deriving (Show, Ord, Eq)
 
 data Storage a = Storage !Record !(SecNode a) deriving (Show, Ord, Eq)
+data DStorage a = DStorage !Record !(SecNode a) deriving (Show, Ord, Eq)
 
 data Use = InSum
          | OutSum deriving (Show, Eq, Ord)
@@ -121,6 +122,10 @@ instance RecNum (DTime a) where
 instance RecNum (Storage a) where
    getRecNum (Storage r _) = r
    setRecNum rec (Storage _ n) = Storage rec n
+
+instance RecNum (DStorage a) where
+   getRecNum (DStorage r _) = r
+   setRecNum rec (DStorage _ n) = DStorage rec n
 
 instance RecNum (Var a) where
    getRecNum (Var r _ _) = r

@@ -133,15 +133,15 @@ instance Format Unicode where
    edgeIdent e =
       Unicode $
       case e of
-         Energy -> "e"
-         MaxEnergy -> "me"
+         Energy -> "E"
+         MaxEnergy -> "mE"
          Power -> "p"
          X -> "x"
          Y -> "y"
          Eta -> "\x03b7"
    time = Unicode "t"
    var = Unicode "v"
-   storage = Unicode "s"
+   storage = Unicode "S"
 
    parenthesize (Unicode x) = Unicode $ "(" ++ x ++ ")"
    minus (Unicode x) = Unicode $ '-' : x

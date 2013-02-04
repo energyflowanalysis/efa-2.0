@@ -21,7 +21,8 @@ data Index a = Energy (Idx.Energy a)
              | Y (Idx.Y a)
              | DY (Idx.DY a)
              | Var (Idx.Var a)
-             | Store (Idx.Storage a)
+             | Storage (Idx.Storage a)
+             | DStorage (Idx.DStorage a)
                deriving (Show, Eq, Ord)
 
 
@@ -44,7 +45,8 @@ instance MkIdxC Idx.DX where mkIdx = DX
 instance MkIdxC Idx.Y where mkIdx = Y
 instance MkIdxC Idx.DY where mkIdx = DY
 instance MkIdxC Idx.Var where mkIdx = Var
-instance MkIdxC Idx.Storage where mkIdx = Store
+instance MkIdxC Idx.Storage where mkIdx = Storage
+instance MkIdxC Idx.DStorage where mkIdx = DStorage
 
 
 class MkVarC term where
@@ -94,6 +96,10 @@ instance (Show nty) => FormatValue (Index nty) where
                    Format.record r `Format.connect`
                    Format.use u `Format.connect` Format.sectionNode x
 
-             Store (Idx.Storage r x) ->
+             Storage (Idx.Storage r x) ->
                 Format.subscript Format.storage $
+                   Format.record r `Format.connect` Format.sectionNode x
+
+             DStorage (Idx.DStorage r x) ->
+                Format.delta $ Format.subscript Format.storage $
                    Format.record r `Format.connect` Format.sectionNode x
