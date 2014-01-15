@@ -25,7 +25,6 @@ module EFA.Signal.Plot (
    recordFrameAttr,
    recordList,
    sequence,
-   optKeyOutside,
    stack,
    stackFrameAttr,
    stacks,
@@ -417,10 +416,6 @@ sequence showKey opts varOpts (Sequ.List xs) =
 
 -- | Plotting Stacks ---------------------------------------------------------------
 
-optKeyOutside :: Opts.T graph -> Opts.T graph
-optKeyOutside =
-   Opts.add (Opt.custom "key" "position") ["outside"]
-
 stackFrameAttr ::
    String -> Format.ASCII -> Opts.T (Graph2D.T Int Double)
 stackFrameAttr title var =
@@ -428,7 +423,7 @@ stackFrameAttr title var =
       Histogram.rowstacked $
       OptsStyle.fillBorderLineType (-1) $
       OptsStyle.fillSolid $
-      optKeyOutside $
+      Opts.keyOutside $
       Opts.xTicks2d [(Format.unASCII var, 0)] $
       Opts.deflt
 
@@ -459,7 +454,7 @@ stacksFrameAttr title vars =
       Histogram.rowstacked $
       OptsStyle.fillBorderLineType (-1) $
       OptsStyle.fillSolid $
-      optKeyOutside $
+      Opts.keyOutside $
       Opts.boxwidthAbsolute 0.9 $
       Opts.xTicks2d (zip (map Format.unASCII vars) [0..]) $
       Opts.deflt
