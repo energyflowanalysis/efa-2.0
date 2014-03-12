@@ -243,8 +243,8 @@ calculateNextBalanceStep (_,balMap) bestPair stepMap sto = One.updateForcingStep
    step = One.getStorageForcingStep "calculateNextBalanceStep" stepMap sto
    fact = Arith.fromRational 2.0
    divi = Arith.fromRational 1.7
-   intervall = One.getForcingIntervall bestPair
-   g _ x =  x -- trace (str ++": "++ show x) x
+   intervall = g "Intervall: " $ One.getForcingIntervall $ g "BestPair: " bestPair
+   g str x =  trace (str ++": "++ show x) x
    step1 = case (intervall, Arith.sign bal) of   
                     -- Zero Crossing didn't occur so far -- increase step to search faster
                     (Nothing,Negative) -> g "A" $ Arith.abs $ (One.getSocDrive step) ~* fact
