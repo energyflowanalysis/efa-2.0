@@ -96,7 +96,7 @@ edgeOrients e =
        y = Graph.to e
    in  (Graph.eDirEdge x y) :
        (Graph.eDirEdge y x) : -- x and y swapped!
-       (Graph.eUnDirEdge x y) :
+       (Graph.eUndirEdge x y) :
        []
 
 

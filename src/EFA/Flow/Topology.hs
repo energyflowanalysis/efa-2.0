@@ -74,7 +74,7 @@ liftEdgeFlow f =
    switchEdgeFlow (const Nothing) (\edge flow -> Just $ f edge flow)
 
 switchEdgeFlow ::
-   (Graph.UnDirEdge node -> a) ->
+   (Graph.UndirEdge node -> a) ->
    (Graph.DirEdge node -> flow -> a) ->
    Graph.EitherEdge node -> Maybe flow -> a
 switchEdgeFlow f _ (Graph.EUndirEdge edge) Nothing = f edge

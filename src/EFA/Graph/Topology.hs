@@ -30,8 +30,8 @@ anyActive = Fold.any isActive . Map.keysSet
 
 
 {-
-Should Topology have an UnDirEdge?
-UnDirEdge could be read as "canonically oriented" edge.
+Should Topology have an UndirEdge?
+UndirEdge could be read as "canonically oriented" edge.
 -}
 type Topology node = Graph node Graph.DirEdge () ()
 

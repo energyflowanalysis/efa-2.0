@@ -75,7 +75,7 @@ flowTopologyFromRecord topo (Record time fs) =
                    Map.singleton
                       (Graph.eDirEdge idx2 idx1)
                       (Just $ Flow {flowOut = Signal.neg opposite, flowIn = Signal.neg normal})
-                Zero -> Map.singleton (Graph.eUnDirEdge idx1 idx2) Nothing) $
+                Zero -> Map.singleton (Graph.eUndirEdge idx1 idx2) Nothing) $
    Graph.edgeLabels topo
 
 fromSection ::

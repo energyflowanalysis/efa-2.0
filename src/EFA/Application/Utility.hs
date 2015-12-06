@@ -74,7 +74,7 @@ dirEdge :: node -> node -> Graph.EitherEdge node
 dirEdge = Graph.eDirEdge
 
 undirEdge :: (Node.C node) => node -> node -> Graph.EitherEdge node
-undirEdge = Graph.eUnDirEdge
+undirEdge = Graph.eUndirEdge
 
 identifyFlowState ::
    (Node.C node) =>

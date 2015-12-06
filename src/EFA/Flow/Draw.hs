@@ -612,7 +612,7 @@ orientEdge e =
       Graph.EUndirEdge ue -> (orientUndirEdge ue, Viz.NoDir, Id)
       Graph.EDirEdge de -> orientDirEdge de
 
-orientUndirEdge :: Ord node => Graph.UnDirEdge node -> DirEdge node
+orientUndirEdge :: Ord node => Graph.UndirEdge node -> DirEdge node
 orientUndirEdge (Graph.UndirEdge x y) = DirEdge x y
 
 orientDirEdge ::

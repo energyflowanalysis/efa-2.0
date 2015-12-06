@@ -5,9 +5,8 @@ module EFA.Graph (
    CG.LabeledEdge,
    CG.Edge(CG.from, CG.to),
    CG.DirEdge(CG.DirEdge),
-   CG.UndirEdge(CG.UndirEdge), -- CG.undirEdge,
-   UnDirEdge, unDirEdge,
-   CG.EitherEdge(CG.EDirEdge,CG.EUndirEdge), eDirEdge, eUnDirEdge,
+   CG.UndirEdge(CG.UndirEdge), CG.undirEdge,
+   CG.EitherEdge(CG.EDirEdge,CG.EUndirEdge), eDirEdge, eUndirEdge,
 
    -- * construction
    CG.empty, CG.fromList, CG.fromMap,
@@ -55,13 +54,8 @@ type
    Graph node edge nodeLabel edgeLabel =
       CG.Graph edge node edgeLabel nodeLabel
 
-type UnDirEdge = CG.UndirEdge
-
-unDirEdge :: (Ord node) => node -> node -> UnDirEdge node
-unDirEdge = CG.undirEdge
-
 eDirEdge :: node -> node -> CG.EitherEdge node
 eDirEdge x y = CG.EDirEdge $ CG.DirEdge x y
 
-eUnDirEdge :: (Ord node) => node -> node -> CG.EitherEdge node
-eUnDirEdge x y = CG.EUndirEdge $ unDirEdge x y
+eUndirEdge :: (Ord node) => node -> node -> CG.EitherEdge node
+eUndirEdge x y = CG.EUndirEdge $ CG.undirEdge x y
