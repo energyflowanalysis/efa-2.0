@@ -45,7 +45,7 @@ instance (QC.Arbitrary node, Ord node) => QC.Arbitrary (ArbTopology node) where
          Map.keys edges
       return $ ArbTopology $
          Graph.fromMap nodes $
-         Map.mapKeys (\(Graph.UnDirEdge x y) -> Graph.DirEdge x y) edges
+         Map.mapKeys (\(Graph.UndirEdge x y) -> Graph.DirEdge x y) edges
 
 
 type Node = Node.Int
