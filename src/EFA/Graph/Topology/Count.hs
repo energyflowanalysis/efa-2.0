@@ -94,9 +94,9 @@ edgeOrients ::
 edgeOrients e =
    let x = Graph.from e
        y = Graph.to e
-   in  (Graph.EDirEdge $ Graph.DirEdge x y) :
-       (Graph.EDirEdge $ Graph.DirEdge y x) : -- x and y swapped!
-       (Graph.EUnDirEdge $ Graph.unDirEdge x y) :
+   in  (Graph.eDirEdge x y) :
+       (Graph.eDirEdge y x) : -- x and y swapped!
+       (Graph.eUnDirEdge x y) :
        []
 
 
