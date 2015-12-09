@@ -1,5 +1,4 @@
 {-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE UndecidableInstances #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE EmptyDataDecls #-}
 
@@ -28,9 +27,16 @@ class Filename a where
   filename :: a -> String
 
 
+class FilenameList a where
+  filenameFromList :: [a] -> String
 
-instance Filename String where
-  filename = fillSpaces
+instance FilenameList a => Filename [a] where
+  filename = filenameFromList
+
+
+
+instance FilenameList Char where
+  filenameFromList = fillSpaces
 
 instance Filename State where
   filename = fillSpaces . show
@@ -48,16 +54,16 @@ instance (Filename a, Filename b) => Filename (a, b) where
 instance Filename Double where
   filename = show
 
-instance Filename [Double] where
-  filename = filenameList
+instance FilenameList Double where
+  filenameFromList = filenameList
 
 
 instance (Filename node) => Filename (TopoIdx.Position node) where
   filename (TopoIdx.Position f t) = filename f ++ "->" ++ filename t
 
 
-instance (Filename node) => Filename [TopoIdx.Position node] where
-  filename = filenameList
+instance (Filename node) => FilenameList (TopoIdx.Position node) where
+  filenameFromList = filenameList
 
 filenameList :: (Filename name) => [name] -> String
 filenameList =
