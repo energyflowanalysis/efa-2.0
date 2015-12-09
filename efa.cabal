@@ -12,10 +12,6 @@ Category:            Engineering
 Build-type:          Simple
 Cabal-version:       >=1.8
 
-Flag buildTests
-  Description: build test suite (makes trouble with TemplateHaskell and dynamic linking)
-  Default: True
-
 Flag buildExamples
   Description: Build complex examples
   Default: True
@@ -214,28 +210,25 @@ Library
     EFA.Flow.EquationSystem
 
 
--- sollte man auf Cabal-Test umstellen,
--- sobald Cabal-Test vernünftig läuft
-Executable test-efa
+-- makes trouble with TemplateHaskell and dynamic linking
+Test-Suite test-efa
+  Type: ExitCode-StdIO-1.0
   Main-Is: EFA/Test.hs
   GHC-Options: -Wall -fwarn-incomplete-uni-patterns -fwarn-tabs -fwarn-missing-import-lists
   Hs-Source-Dirs: test
-  If flag(buildTests)
-    Build-Depends:
-      efa,
-      quickcheck-properties >=0.1 && <0.2,
-      -- alternative: checkers
-      QuickCheck,
-      containers,
-      explicit-exception,
-      non-empty,
-      utility-ht,
-      vector,
-      random,
-      template-haskell >=2.7 && <2.9,
-      base
-  Else
-    Buildable: False
+  Build-Depends:
+    efa,
+    quickcheck-properties >=0.1 && <0.2,
+    -- alternative: checkers
+    QuickCheck,
+    containers,
+    explicit-exception,
+    non-empty,
+    utility-ht,
+    vector,
+    random,
+    template-haskell >=2.7 && <2.9,
+    base
   Other-Modules:
     EFA.Test.Signal
     EFA.Test.Sweep
