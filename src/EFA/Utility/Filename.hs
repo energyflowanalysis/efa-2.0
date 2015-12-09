@@ -13,6 +13,7 @@ import qualified EFA.Flow.Topology.Index as TopoIdx
 import qualified Data.List as List
 import Data.List.HT (chop)
 import Data.Time.Clock (UTCTime)
+import Data.Char (isSpace)
 
 import qualified System.FilePath.Posix as SFP
 
@@ -29,21 +30,16 @@ class Filename a where
 
 
 instance Filename String where
-  filename = map f
-    where f ' ' = '_'
-          f x = x
-
+  filename = fillSpaces
 
 instance Filename State where
-  filename = map f . show
-    where f ' ' = '_'
-          f x = x
-
+  filename = fillSpaces . show
 
 instance Filename UTCTime where
-  filename = map f . show
-    where f ' ' = '_'
-          f x = x
+  filename = fillSpaces . show
+
+fillSpaces :: String -> String
+fillSpaces = map (\c -> if isSpace c then '_' else c)
 
 
 instance (Filename a, Filename b) => Filename (a, b) where
@@ -53,8 +49,7 @@ instance Filename Double where
   filename = show
 
 instance Filename [Double] where
-  filename =
-    ('[':) . (++ "]") . List.intercalate "_" . map filename
+  filename = filenameList
 
 
 instance (Filename node) => Filename (TopoIdx.Position node) where
@@ -62,7 +57,10 @@ instance (Filename node) => Filename (TopoIdx.Position node) where
 
 
 instance (Filename node) => Filename [TopoIdx.Position node] where
-  filename =
+  filename = filenameList
+
+filenameList :: (Filename name) => [name] -> String
+filenameList =
     ('[':) . (++ "]") . List.intercalate "_" . map filename
 
 
