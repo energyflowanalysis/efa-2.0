@@ -63,22 +63,12 @@ create caller xs = ND.fromList newCaller
 
 -- | generate a vector as linear listing of all coordinates in a grid
 toVector ::
-  (DV.Walker vec,
-   DV.Storage vec (ND.Data dim a),
-   DV.Singleton vec,
-   DV.Storage vec [a],
+  (DV.Storage vec (ND.Data dim a),
    DV.Storage vec a,
-   DV.Storage vec (vec [a]),
    DV.FromList vec) =>
   Grid typ dim label vec a ->
   vec (ND.Data dim a)
-toVector = DV.map ND.Data . g
-  where
-    g (ND.Data []) = DV.singleton []
-    g (ND.Data (ax:axes)) =
-      DV.concat $ DV.toList $
-      DV.map (\x -> DV.map (x:) $ g $ ND.Data axes) $
-      Axis.getVec ax
+toVector = DV.fromList . Trav.traverse (DV.toList . Axis.getVec)
 
 -- | Get Sizes of alle Axes
 sizes ::
