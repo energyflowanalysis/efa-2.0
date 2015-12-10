@@ -2,11 +2,9 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE  TypeFamilies #-}
+{-# LANGUAGE TypeFamilies #-}
 
 module EFA.Data.ND.Cube.Map where
-
-import EFA.Utility(Caller,merror,(|>),ModuleName(..),FunctionName, genCaller)
 
 import qualified EFA.Equation.Arithmetic as Arith
 import qualified EFA.Data.Vector as DV
@@ -18,16 +16,19 @@ import qualified EFA.Signal.Signal as Sig
 import EFA.Signal.Data(Nil,(:>))
 import qualified EFA.Signal.Data as SD
 import qualified EFA.Reference.Base as Ref
-import qualified Data.Map as Map
-
-
 import EFA.Data.Interpolation as Interp
+
+import EFA.Utility(Caller,merror,(|>),ModuleName(..),FunctionName, genCaller)
+import EFA.Utility.Trace(mytrace)
+
+import qualified Data.Map as Map
+import Data.Maybe(fromMaybe)
+
 
 import qualified Prelude as P
 import Prelude hiding (zipWith, map, foldl, lookup)
-import Data.Maybe(fromMaybe)
 
-import EFA.Utility.Trace(mytrace)
+
 
 modul :: ModuleName
 modul = ModuleName "Cube.Map"
