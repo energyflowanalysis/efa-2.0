@@ -1,11 +1,9 @@
 {-# LANGUAGE EmptyDataDecls #-}
 {-# LANGUAGE TypeFamilies #-}
-{-# LANGUAGE TypeSynonymInstances #-}
-{-# LANGUAGE FlexibleInstances #-}
 
 module EFA.Data.ND where
 
-import EFA.Utility(Caller,merror,ModuleName(..))
+import EFA.Utility(Caller,genCaller,merror,ModuleName(..))
 import qualified EFA.Reference.Base as Ref
 
 import qualified Data.Map as Map
@@ -70,15 +68,8 @@ fromList caller xs =
 class Dimensions dim where num :: Data dim a -> Int
 
 instance Dimensions Dim1 where num _ = 1
-instance Dimensions Dim2 where num _ = 2
-instance Dimensions Dim3 where num _ = 3
-instance Dimensions Dim4 where num _ = 4
-instance Dimensions Dim5 where num _ = 5
-instance Dimensions Dim6 where num _ = 6
-instance Dimensions Dim7 where num _ = 7
-instance Dimensions Dim8 where num _ = 8
-instance Dimensions Dim9 where num _ = 9
-instance Dimensions Dim10 where num _ = 10
+instance Dimensions dim => Dimensions (Succ dim) where
+  num = succ . num . tail (genCaller m "num")
 
 
 
