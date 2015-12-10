@@ -84,6 +84,7 @@ num =
 
 tail :: Caller -> Data dim a -> Data (SubDim dim) a
 tail caller (Data []) = merror caller m "tail" "no dimension left"
+tail caller (Data [_]) = merror caller m "tail" "no dimension left"
 tail _ (Data (_:xs)) = Data xs
 
 head :: Caller -> Data dim a -> a
