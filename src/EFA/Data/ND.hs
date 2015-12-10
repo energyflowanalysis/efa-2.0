@@ -95,9 +95,6 @@ append x (Data xs) = Data $ x:xs
 toList :: Data dim a -> [a]
 toList (Data xs) = xs
 
-unsafeLookup :: Data dim a -> Idx -> a
-unsafeLookup (Data xs) (Idx idx) = xs !! idx
-
 lookup :: Caller -> Data dim a -> Idx -> a
 lookup caller (Data xs) (Idx idx) =
   if idx >= 0 && idx < length xs
