@@ -177,10 +177,10 @@ getSubCube ::
   Caller ->
   Cube typ dim label vec a b ->
   Strict.Idx -> Cube typ (ND.SubDim dim) label vec a b
-getSubCube caller (Cube grid (Data vec)) (Strict.Idx idx) = Cube (ND.dropFirst (caller |> nc "getSubCube") grid) $ Data subVec
+getSubCube caller (Cube grid (Data vec)) (Strict.Idx idx) = Cube (ND.tail (caller |> nc "getSubCube") grid) $ Data subVec
   where subVec = DV.slice startIdx l vec
         startIdx = mytrace 0 "getSubCube" "startIdx" $ idx*l
-        l = mytrace 0 "getSubCube" "l" $ Strict.len $ ND.getFirst (caller |> nc "getSubCube") grid
+        l = mytrace 0 "getSubCube" "l" $ Strict.len $ ND.head (caller |> nc "getSubCube") grid
 
 interpolate ::
   (Ord a,Arith.Constant b,Num b,DV.LookupMaybe vec b,
@@ -197,10 +197,10 @@ interpolate ::
 interpolate caller interpFunction cube coordinates = Interp.combine3 y1 y2 y
   where
     newCaller = (caller |> (nc "interpolate"))
-    axis = mytrace 0 "interpolate" "axis" $ ND.getFirst newCaller $
+    axis = mytrace 0 "interpolate" "axis" $ ND.head newCaller $
            getGrid $ mytrace 0 "interpolate" "cube" $ cube
-    subCoordinates = ND.dropFirst newCaller coordinates
-    x = ND.getFirst newCaller $ coordinates
+    subCoordinates = ND.tail newCaller coordinates
+    x = ND.head newCaller $ coordinates
     ((idx1,idx2),(x1,x2)) = Strict.getSupportPoints axis x
     f idx = interpolate newCaller interpFunction (getSubCube newCaller cube idx) subCoordinates
     (y1,y2) = if ND.len coordinates >=2 then (f idx1, f idx2)
@@ -223,7 +223,7 @@ to2DSignal ::
     Sig.TC Sig.Signal t (SD.Data (vec :> vec :> Nil) b)
 to2DSignal caller (Cube grid (Data vec)) = Sig.TC $ SD.Data $ DV.imap f $ Strict.getVec axis
       where
-        axis = ND.getFirst (caller |> nc "nest") $ grid
+        axis = ND.head (caller |> nc "nest") $ grid
         l = Strict.len axis
         f idx _ = DV.slice startIdx l vec
           where

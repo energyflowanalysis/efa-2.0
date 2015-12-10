@@ -12,7 +12,7 @@ import qualified Data.Map as Map
 import Data.Maybe.HT (toMaybe)
 import Data.Maybe (fromMaybe)
 
-import Prelude hiding (map)
+import Prelude hiding (map, head, tail)
 import qualified Prelude as P
 
 
@@ -82,17 +82,17 @@ instance Dimensions Dim10 where num _ = 10
 
 
 
-dropFirst :: Caller -> Data dim a -> Data (SubDim dim) a
-dropFirst caller (Data []) = merror caller m "dropFirst" "no dimension left"
-dropFirst _ (Data (_:xs)) = Data xs
+tail :: Caller -> Data dim a -> Data (SubDim dim) a
+tail caller (Data []) = merror caller m "tail" "no dimension left"
+tail _ (Data (_:xs)) = Data xs
 
-getFirst :: Caller -> Data dim a -> a
-getFirst caller (Data []) = merror caller m "getFirst" "no first dimension"
-getFirst _ (Data (x:_)) = x
+head :: Caller -> Data dim a -> a
+head caller (Data []) = merror caller m "head" "no first dimension"
+head _ (Data (x:_)) = x
 
 
-append :: a -> Data (SubDim dim) a -> Data dim a
-append x (Data xs) = Data $ x:xs
+cons :: a -> Data (SubDim dim) a -> Data dim a
+cons x (Data xs) = Data $ x:xs
 
 toList :: Data dim a -> [a]
 toList (Data xs) = xs
