@@ -83,8 +83,8 @@ toVector axs = DV.map ND.Data $ g axs
 -- | Get Sizes of alle Axes
 sizes ::
   (DV.Storage vec a, DV.Length vec) =>
-  Grid typ dim label vec a -> (ND.Data dim Int)
-sizes (ND.Data axes) = ND.Data $ map Axis.len axes
+  Grid typ dim label vec a -> ND.Data dim Int
+sizes = ND.map Axis.len
 
 
 -- | Remove axes of specified dimensions
