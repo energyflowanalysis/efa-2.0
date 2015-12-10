@@ -1,5 +1,6 @@
 {-# LANGUAGE EmptyDataDecls #-}
 {-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE Rank2Types #-}
 
 module EFA.Data.ND where
 
@@ -65,12 +66,20 @@ fromList caller xs =
      else merror caller m "fromList"
           "list length doesn't match dimension"
 
-class Dimensions dim where num :: Data dim a -> Int
+class Dimensions dim where
+  switchDim :: f Dim1 -> (forall dimi. Dimensions dimi => f (Succ dimi)) -> f dim
 
-instance Dimensions Dim1 where num _ = 1
-instance Dimensions dim => Dimensions (Succ dim) where
-  num = succ . num . tail (genCaller m "num")
+instance Dimensions Dim1 where switchDim f _ = f
+instance Dimensions dim => Dimensions (Succ dim) where switchDim _ f = f
 
+newtype DimNum a dim = DimNum {getDimNum :: Data dim a -> Int}
+
+num :: Dimensions dim => Data dim a -> Int
+num =
+  getDimNum $
+  switchDim
+    (DimNum $ const 1)
+    (DimNum $ succ . num . tail (genCaller m "num"))
 
 
 tail :: Caller -> Data dim a -> Data (SubDim dim) a
