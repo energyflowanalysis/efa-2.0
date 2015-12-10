@@ -240,16 +240,10 @@ interpolate1 ::
   Cube typ FL.N1 label vec a b ->
   ND.Data FL.N1 a ->
   Interp.Val b
-interpolate1 caller interpFunction cube coordinates = Interp.combine3 y1 y2 y
-  where
-    newCaller = caller |> nc "interpolate"
-    axis = mytrace 0 "interpolate" "axis" $ NonEmpty.head $
-           getGrid $ mytrace 0 "interpolate" "cube" cube
-    x = NonEmpty.head coordinates
-    ((idx1,idx2),(x1,x2)) = Strict.getSupportPoints axis x
-    y1 = Interp.Inter $ lookup newCaller (NonEmpty.singleton idx1) cube
-    y2 = Interp.Inter $ lookup newCaller (NonEmpty.singleton idx2) cube
-    y = interpFunction (x1,x2) (Interp.unpack y1,Interp.unpack y2) x
+interpolate1 caller interpFunction cube coordinates =
+  interpolateGen interpFunction cube coordinates $ \idx ->
+    Interp.Inter $
+    lookup (caller |> nc "interpolate1") (NonEmpty.singleton idx) cube
 
 interpolateSucc ::
   (FL.C dim,
@@ -264,16 +258,30 @@ interpolateSucc ::
   Cube typ (ND.TwoMore dim) label vec a b ->
   ND.Data (ND.TwoMore dim) a ->
   Interp.Val b
-interpolateSucc caller interpFunction cube coordinates = Interp.combine3 y1 y2 y
+interpolateSucc caller interpFunction cube coordinates =
+  interpolateGen interpFunction cube coordinates $ \idx ->
+    interpolate (caller |> nc "interpolateSucc") interpFunction
+      (getSubCube cube idx) (NonEmpty.tail coordinates)
+
+interpolateGen ::
+  (FL.C dim,
+   Ord a, Arith.Constant b,
+   DV.LookupUnsafe vec a,
+   DV.Storage vec a, Show (vec a),
+   DV.Storage vec b, Show (vec b),
+   DV.Length vec, DV.Find vec,
+   Show label) =>
+  ((a,a) -> (b,b) -> a -> Interp.Val b) ->
+  Cube typ (NonEmpty.T dim) label vec a b ->
+  ND.Data (NonEmpty.T dim) a ->
+  (Strict.Idx -> Val b) ->
+  Interp.Val b
+interpolateGen interpFunction cube coordinates f = Interp.combine3 y1 y2 y
   where
-    newCaller = caller |> nc "interpolate"
     axis = mytrace 0 "interpolate" "axis" $ NonEmpty.head $
            getGrid $ mytrace 0 "interpolate" "cube" cube
     x = NonEmpty.head coordinates
     ((idx1,idx2),(x1,x2)) = Strict.getSupportPoints axis x
-    f idx =
-      interpolate newCaller interpFunction
-        (getSubCube cube idx) (NonEmpty.tail coordinates)
     y1 = f idx1; y2 = f idx2
     y = interpFunction (x1,x2) (Interp.unpack y1,Interp.unpack y2) x
 
