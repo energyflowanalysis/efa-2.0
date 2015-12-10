@@ -8,10 +8,13 @@ module EFA.Data.ND where
 import EFA.Utility(Caller,merror,ModuleName(..))
 import qualified EFA.Reference.Base as Ref
 
+import qualified Data.Map as Map
+import Data.Maybe.HT (toMaybe)
+import Data.Maybe (fromMaybe)
+
 import Prelude hiding (map)
 import qualified Prelude as P
 
-import qualified Data.Map as Map
 
 m:: ModuleName
 m = ModuleName "Space"
@@ -96,17 +99,14 @@ toList :: Data dim a -> [a]
 toList (Data xs) = xs
 
 lookup :: Caller -> Data dim a -> Idx -> a
-lookup caller (Data xs) (Idx idx) =
-  if idx >= 0 && idx < length xs
-     then xs !! idx
-     else merror caller m "lookup" $ "Index out of Bounds: " ++ show idx
+lookup caller xs idx =
+  fromMaybe (merror caller m "lookup" $ "Index out of Bounds: " ++ show idx) $
+  lookupMaybe xs idx
 
 
 lookupMaybe :: Data dim a -> Idx -> Maybe a
 lookupMaybe (Data xs) (Idx idx) =
-  if idx >= 0 && idx < length xs
-     then Just $ xs !! idx
-          else Nothing
+  toMaybe (idx >= 0 && idx < length xs) (xs !! idx)
 
 data Point dim a = Point (Data dim a) deriving Show
 
