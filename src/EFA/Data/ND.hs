@@ -21,12 +21,6 @@ m = ModuleName "Space"
 data Dim1
 data Succ a
 
--- | apply nested functor to the functor argument
-type family SubDim a
-
-type instance SubDim Dim1 = Dim1
-type instance SubDim (Succ a) = a
-
 type Dim2 = Succ Dim1
 type Dim3 = Succ Dim2
 type Dim4 = Succ Dim3
@@ -82,7 +76,7 @@ num =
     (DimNum $ succ . num . tail (genCaller m "num"))
 
 
-tail :: Caller -> Data dim a -> Data (SubDim dim) a
+tail :: Caller -> Data (Succ dim) a -> Data dim a
 tail caller (Data []) = merror caller m "tail" "no dimension left"
 tail caller (Data [_]) = merror caller m "tail" "no dimension left"
 tail _ (Data (_:xs)) = Data xs
@@ -92,7 +86,7 @@ head caller (Data []) = merror caller m "head" "no first dimension"
 head _ (Data (x:_)) = x
 
 
-cons :: a -> Data (SubDim dim) a -> Data dim a
+cons :: a -> Data dim a -> Data (Succ dim) a
 cons x (Data xs) = Data $ x:xs
 
 toList :: Data dim a -> [a]
