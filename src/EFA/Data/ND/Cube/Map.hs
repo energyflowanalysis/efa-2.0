@@ -22,6 +22,7 @@ import EFA.Utility(Caller,merror,(|>),ModuleName(..),FunctionName, genCaller)
 import EFA.Utility.Trace(mytrace)
 
 import qualified Data.Map as Map
+import qualified Data.Foldable as Fold
 import Data.Maybe(fromMaybe)
 
 
@@ -74,8 +75,8 @@ lookup caller idx cube@(Cube grid _) =
 checkVector ::
   (DV.Storage vec b, DV.Length vec,DV.Storage vec a) =>
   Grid typ dim label vec a -> vec b -> Bool
-checkVector (ND.Data grid) vec =  DV.length vec == numberElements
-  where numberElements = P.foldl (*) (1) (fmap Strict.len grid)
+checkVector grid vec =
+  DV.length vec == Fold.product (fmap Strict.len grid)
 
 
 create ::
