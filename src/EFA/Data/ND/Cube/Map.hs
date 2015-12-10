@@ -175,15 +175,22 @@ getSubCube ::
   (DV.Storage vec b, DV.Slice vec,
    DV.Storage vec a, DV.Length vec) =>
   Caller ->
-  Cube typ dim label vec a b ->
-  Strict.Idx -> Cube typ (ND.SubDim dim) label vec a b
+  Cube typ (ND.Succ dim) label vec a b ->
+  Strict.Idx -> Cube typ dim label vec a b
 getSubCube caller (Cube grid (Data vec)) (Strict.Idx idx) = Cube (ND.tail (caller |> nc "getSubCube") grid) $ Data subVec
   where subVec = DV.slice startIdx l vec
         startIdx = mytrace 0 "getSubCube" "startIdx" $ idx*l
         l = mytrace 0 "getSubCube" "l" $ Strict.len $ ND.head (caller |> nc "getSubCube") grid
 
+newtype Interpolate label vec typ a b dim =
+  Interpolate {
+    runInterpolate ::
+      Cube typ dim label vec a b -> ND.Data dim a -> Interp.Val b
+  }
+
 interpolate ::
-  (Ord a,Arith.Constant b,Num b,DV.LookupMaybe vec b,
+  (ND.Dimensions dim,
+   Ord a,Arith.Constant b,DV.LookupMaybe vec b,
    DV.LookupUnsafe vec a,Show (vec b),(Show (vec a)),
    DV.Storage vec a,Show label,
    DV.Length vec,
@@ -192,9 +199,51 @@ interpolate ::
   Caller ->
   ((a,a) -> (b,b) -> a -> Interp.Val b) ->
   Cube typ dim label vec a b ->
-  (ND.Data dim a) ->
+  ND.Data dim a ->
   Interp.Val b
-interpolate caller interpFunction cube coordinates = Interp.combine3 y1 y2 y
+interpolate caller interpFunction =
+  runInterpolate $
+  ND.switchDim
+    (Interpolate $ interpolate1 caller interpFunction)
+    (Interpolate $ interpolateSucc caller interpFunction)
+
+interpolate1 ::
+  (Ord a,Arith.Constant b,DV.LookupMaybe vec b,
+   DV.LookupUnsafe vec a,Show (vec b),(Show (vec a)),
+   DV.Storage vec a,Show label,
+   DV.Length vec,
+   DV.Find vec,
+   DV.Storage vec b, DV.Slice vec) =>
+  Caller ->
+  ((a,a) -> (b,b) -> a -> Interp.Val b) ->
+  Cube typ ND.Dim1 label vec a b ->
+  ND.Data ND.Dim1 a ->
+  Interp.Val b
+interpolate1 caller interpFunction cube coordinates = Interp.combine3 y1 y2 y
+  where
+    newCaller = caller |> nc "interpolate"
+    axis = mytrace 0 "interpolate" "axis" $ ND.head newCaller $
+           getGrid $ mytrace 0 "interpolate" "cube" $ cube
+    x = ND.head newCaller $ coordinates
+    ((idx1,idx2),(x1,x2)) = Strict.getSupportPoints axis x
+    y1 = Interp.Inter $ lookUp newCaller (ND.Data [idx1]) cube
+    y2 = Interp.Inter $ lookUp newCaller (ND.Data [idx2]) cube
+    y = interpFunction (x1,x2) (Interp.unpack y1,Interp.unpack y2) x
+
+interpolateSucc ::
+  (ND.Dimensions dim,
+   Ord a,Arith.Constant b,DV.LookupMaybe vec b,
+   DV.LookupUnsafe vec a,Show (vec b),(Show (vec a)),
+   DV.Storage vec a,Show label,
+   DV.Length vec,
+   DV.Find vec,
+   DV.Storage vec b, DV.Slice vec) =>
+  Caller ->
+  ((a,a) -> (b,b) -> a -> Interp.Val b) ->
+  Cube typ (ND.Succ dim) label vec a b ->
+  ND.Data (ND.Succ dim) a ->
+  Interp.Val b
+interpolateSucc caller interpFunction cube coordinates = Interp.combine3 y1 y2 y
   where
     newCaller = (caller |> (nc "interpolate"))
     axis = mytrace 0 "interpolate" "axis" $ ND.head newCaller $
@@ -203,9 +252,7 @@ interpolate caller interpFunction cube coordinates = Interp.combine3 y1 y2 y
     x = ND.head newCaller $ coordinates
     ((idx1,idx2),(x1,x2)) = Strict.getSupportPoints axis x
     f idx = interpolate newCaller interpFunction (getSubCube newCaller cube idx) subCoordinates
-    (y1,y2) = if ND.len coordinates >=2 then (f idx1, f idx2)
-              else (Interp.Inter $ lookUp newCaller (ND.Data [idx1]) cube,
-                    Interp.Inter $ lookUp newCaller (ND.Data [idx2]) cube)
+    y1 = f idx1; y2 = f idx2
     y = interpFunction (x1,x2) (Interp.unpack y1,Interp.unpack y2) x
 
 dimension :: ND.Dimensions dim => Cube typ dim label vec a b -> Int
