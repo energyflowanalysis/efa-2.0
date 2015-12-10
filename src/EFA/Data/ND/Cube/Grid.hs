@@ -2,20 +2,16 @@
 
 module EFA.Data.ND.Cube.Grid where
 
---import qualified Prelude as P
---import Prelude hiding (map)
-
-import EFA.Utility(Caller,ModuleName(..),(|>),FunctionName, genCaller)
 import qualified EFA.Data.Vector as DV
---import qualified EFA.Reference.Base as Ref
-
 import qualified EFA.Data.ND as ND
 import qualified EFA.Data.Axis.Strict as Axis
---import EFA.Data.Axis(Strict(..))
+import qualified EFA.Utility.FixedLength as FL
+import EFA.Utility(Caller,ModuleName(..),(|>),FunctionName, genCaller)
 
 import qualified Data.Map as Map
 import qualified Data.Traversable as Trav
 import qualified Data.Foldable as Fold
+
 
 m :: ModuleName
 m = ModuleName "Grid"
@@ -35,69 +31,72 @@ type DimIdx dim = ND.Data dim Axis.Idx
 newtype LinIdx = LinIdx {getInt:: Int} deriving (Show,Eq)
 
 toLinear ::
- (DV.Storage vec a, DV.Length vec)=>
+ (FL.C dim, DV.Storage vec a, DV.Length vec)=>
   Grid typ dim label vec a -> DimIdx dim -> LinIdx
 toLinear axes indices = LinIdx $
   Fold.foldl (\cum (ax, Axis.Idx idx) -> cum * Axis.len ax + idx) 0 $
-  ND.zip axes indices
+  FL.Wrap $ FL.zipWith (,) axes indices
 
 fromLinear ::
-  (DV.Storage vec a, DV.Length vec) =>
+  (FL.C dim, DV.Storage vec a, DV.Length vec) =>
   Grid typ dim label vec a -> LinIdx -> DimIdx dim
 fromLinear axes (LinIdx idx) =
-  fmap Axis.Idx $ snd $
-  Trav.mapAccumR (\r ax -> divMod r (Axis.len ax)) idx axes
+  FL.unwrap $ fmap Axis.Idx $ snd $
+  Trav.mapAccumR (\r ax -> divMod r (Axis.len ax)) idx $ FL.Wrap axes
 
 create ::
-  (ND.Dimensions dim,
-   Ord a,
+  (FL.C dim, Ord a,
    DV.Zipper vec,
    DV.Storage vec a,
    DV.Storage vec Bool,
    DV.Singleton vec) =>
-            Caller -> [(label,vec a)] -> Grid typ dim label vec a
-create caller xs = ND.fromList newCaller
-                         $ map (\(label,vec) -> Axis.fromVec newCaller label vec) xs
+  Caller -> ND.Data dim (label,vec a) -> Grid typ dim label vec a
+create caller = FL.map (uncurry $ Axis.fromVec newCaller)
   where newCaller = caller |> (nc "create")
 
 
 -- | generate a vector as linear listing of all coordinates in a grid
 toVector ::
-  (DV.Storage vec (ND.Data dim a),
+  (FL.C dim,
+   DV.Storage vec (ND.Data dim a),
    DV.Storage vec a,
    DV.FromList vec) =>
   Grid typ dim label vec a ->
   vec (ND.Data dim a)
-toVector = DV.fromList . Trav.traverse (DV.toList . Axis.getVec)
+toVector =
+  DV.fromList . map FL.unwrap .
+  Trav.traverse (DV.toList . Axis.getVec) . FL.Wrap
 
 -- | Get Sizes of alle Axes
 sizes ::
-  (DV.Storage vec a, DV.Length vec) =>
+  (FL.C dim, DV.Storage vec a, DV.Length vec) =>
   Grid typ dim label vec a -> ND.Data dim Int
-sizes = fmap Axis.len
+sizes = FL.map Axis.len
 
 
 -- | Remove axes of specified dimensions
 extract ::
+  (FL.C dim, FL.C dim2) =>
   Caller ->
   Grid typ dim label vec a ->
   ND.Data dim2 ND.Idx ->
   Grid typ dim2 label vec a
 extract caller grid =
-  fmap (ND.lookup (caller |> nc "extract") grid)
+  FL.map (ND.lookup (caller |> nc "extract") grid)
 
 -- | Generate a complete index room, but restrain index for dimension to be reduced to the specified value
 reductionIndexVector ::
-  (DV.Walker vec,DV.Storage vec LinIdx,DV.Length vec,
-   DV.Storage vec (vec [Axis.Idx]),
-   DV.Storage vec [Axis.Idx],
+  (FL.C dim,
+   DV.Walker vec,DV.Storage vec LinIdx,DV.Length vec,
    DV.Storage vec (ND.Data dim Axis.Idx),
    DV.Singleton vec,
    DV.Storage vec Axis.Idx,
    DV.Storage vec a,
    DV.FromList vec) =>
   Grid typ dim label vec a -> Map.Map ND.Idx Axis.Idx -> vec LinIdx
-reductionIndexVector axes dimensionsToReduce = DV.map (toLinear axes) $ toVector $ ND.imap f axes
-  where f dim axis@(Axis.Axis l _) = case Map.lookup dim dimensionsToReduce of
-          Just index -> Axis.Axis l $ DV.fromList $ [index]
-          Nothing -> Axis.imap (\index _ -> index) axis
+reductionIndexVector axes dimensionsToReduce =
+    DV.map (toLinear axes) $ toVector $ FL.zipWith f FL.indicesInt axes
+  where f dim axis@(Axis.Axis l _) =
+          case Map.lookup (ND.Idx dim) dimensionsToReduce of
+            Just index -> Axis.Axis l $ DV.singleton index
+            Nothing -> Axis.imap (\index _ -> index) axis

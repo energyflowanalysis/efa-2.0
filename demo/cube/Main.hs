@@ -1,7 +1,9 @@
 import EFA.Data.ND.Cube.Map (Cube)
 import qualified EFA.Data.ND.Cube.Map as Cube
 
-import EFA.Data.ND (Dim2)
+import qualified EFA.Utility.FixedLength as FL
+import EFA.Utility.FixedLength (end, (!:))
+
 import EFA.Utility (genCaller,ModuleName(ModuleName))
 import qualified EFA.Signal.Signal as Sig
 import qualified EFA.Data.Axis.Strict as Axis
@@ -31,16 +33,21 @@ interpFunction ::
   Double -> Interp.Val Double
 interpFunction = Interp.dim1 "main" Interp.Linear Interp.ExtrapLinear
 
-dat2 :: a -> a -> ND.Data Dim2 a
-dat2 x y = ND.Data [x,y]
+dat1 :: a -> ND.Data FL.N1 a
+dat1 x = x!:end
+
+dat2 :: a -> a -> ND.Data FL.N2 a
+dat2 x y = x!:y!:end
 
 main :: IO()
 main = do
   let caller = genCaller (ModuleName "Main") "main"
-  let x =  V.fromList ["x1", "x2"] :: (V.Vector String)
-  let y =  V.fromList ["y1","y2"]:: (V.Vector String)
+  let x, y :: V.Vector String
+      x =  V.fromList ["x1", "x2"]
+      y =  V.fromList ["y1","y2"]
   let z =  V.fromList ["z11","z12","z21","z22"]
-  let o = Cube.create caller [("x",x),("y",y)] z :: Cube Edge Dim2 String (V.Vector) String String
+  let o :: Cube Edge FL.N2 String V.Vector String String
+      o = Cube.create caller (dat2 ("x",x) ("y",y)) z
   let z11 = Cube.lookupLin caller o (Grid.LinIdx 0)
   let z12 = Cube.lookupLin caller o (Grid.LinIdx 1)
   let z21 = Cube.lookupLin caller o (Grid.LinIdx 2)
@@ -53,8 +60,10 @@ main = do
   let x1 = V.fromList [1,2]
   let y1 = V.fromList [3,4]
   let z1 = V.fromList [11,12,21,22]
-  let sys1 = Grid.create caller [("x",x1),("y",y1)] :: Grid Edge Dim2 String V.Vector Double
-  let o1 = Cube.create caller [("x",x1),("y",y1)] z1 :: Cube Edge Dim2 String V.Vector Double Double
+  let sys1 :: Grid Edge FL.N2 String V.Vector Double
+      sys1 = Grid.create caller (dat2 ("x",x1) ("y",y1))
+  let o1 :: Cube Edge FL.N2 String V.Vector Double Double
+      o1 = Cube.create caller (dat2 ("x",x1) ("y",y1)) z1
   let zInt = Cube.interpolate caller interpFunction o1 (dat2 1 3)
   let zInt2 = Cube.interpolate caller interpFunction o1 (dat2 1 4)
   let zInt3 = Cube.interpolate caller interpFunction o1 (dat2 2 3)
@@ -65,12 +74,14 @@ main = do
   let zInt8 = Cube.interpolate caller interpFunction o1 (dat2 2 3.5)
   let zInt9 = Cube.interpolate caller interpFunction o1 (dat2 1.5 3.5)
 
-  let sig = Cube.to2DSignal caller o1 :: Sig.UTSignal2 V.Vector V.Vector Double
+  let sig :: Sig.UTSignal2 V.Vector V.Vector Double
+      sig = Cube.to2DSignal caller o1
   let vec = Cube.getData o1
-  let cube = Cube.mapWithGrid (\c xx -> (c,xx)) o1
-  let genCube = Cube.generateWithGrid (id) sys1
-  let subCube = Cube.extract caller cube (ND.Data [ND.Idx 0])
-                (Map.fromList [(ND.Idx 1,Axis.Idx 0)])
+  let cube = Cube.mapWithGrid (,) o1
+  let genCube = Cube.generateWithGrid id sys1
+  let subCube =
+         Cube.extract caller cube (dat1 (ND.Idx 0))
+            (Map.singleton (ND.Idx 1) (Axis.Idx 0))
 
   print o
   print z11
@@ -98,6 +109,3 @@ main = do
   print cube
   print genCube
   print subCube
-
-
-  
