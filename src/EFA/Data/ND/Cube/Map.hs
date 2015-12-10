@@ -193,10 +193,9 @@ getSubCube ::
   (FL.C dim,
    DV.Storage vec b, DV.Slice vec,
    DV.Storage vec a, DV.Length vec) =>
-  Caller ->
   Cube typ (NonEmpty.T dim) label vec a b ->
   Strict.Idx -> Cube typ dim label vec a b
-getSubCube _caller (Cube grid (Data vec)) (Strict.Idx idx) =
+getSubCube (Cube grid (Data vec)) (Strict.Idx idx) =
     Cube (NonEmpty.tail grid) $ Data subVec
   where subVec = DV.slice startIdx l vec
         startIdx = mytrace 0 "getSubCube" "startIdx" $ idx*l
@@ -274,7 +273,7 @@ interpolateSucc caller interpFunction cube coordinates = Interp.combine3 y1 y2 y
     ((idx1,idx2),(x1,x2)) = Strict.getSupportPoints axis x
     f idx =
       interpolate newCaller interpFunction
-        (getSubCube newCaller cube idx) (NonEmpty.tail coordinates)
+        (getSubCube cube idx) (NonEmpty.tail coordinates)
     y1 = f idx1; y2 = f idx2
     y = interpFunction (x1,x2) (Interp.unpack y1,Interp.unpack y2) x
 
@@ -289,10 +288,10 @@ to2DSignal ::
      DV.Slice vec,
      DV.Storage vec a,
      DV.Length vec) =>
-    Caller ->
     Cube typ (NonEmpty.T dim) label vec a b ->
     Sig.TC Sig.Signal t (SD.Data (vec :> vec :> Nil) b)
-to2DSignal _caller (Cube grid (Data vec)) = Sig.TC $ SD.Data $ DV.imap f $ Strict.getVec axis
+to2DSignal (Cube grid (Data vec)) =
+  Sig.TC $ SD.Data $ DV.imap f $ Strict.getVec axis
       where
         axis = NonEmpty.head grid
         l = Strict.len axis

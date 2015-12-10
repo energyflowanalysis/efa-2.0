@@ -75,7 +75,7 @@ main = do
   let zInt9 = Cube.interpolate caller interpFunction o1 (dat2 1.5 3.5)
 
   let sig :: Sig.UTSignal2 V.Vector V.Vector Double
-      sig = Cube.to2DSignal caller o1
+      sig = Cube.to2DSignal o1
   let vec = Cube.getData o1
   let cube = Cube.mapWithGrid (,) o1
   let genCube = Cube.generateWithGrid id sys1
