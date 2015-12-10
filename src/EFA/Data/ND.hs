@@ -84,7 +84,6 @@ instance Dimensions Dim10 where num _ = 10
 
 dropFirst :: Caller -> Data dim a -> Data (SubDim dim) a
 dropFirst caller (Data []) = merror caller m "dropFirst" "no Dimension left"
-dropFirst caller (Data [_]) = merror caller m "dropFirst" "no Dimension left"
 dropFirst _ (Data (_:xs)) = Data xs
 
 getFirst :: Caller -> Data dim a -> a
