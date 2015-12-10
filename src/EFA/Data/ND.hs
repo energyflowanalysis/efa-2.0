@@ -113,8 +113,8 @@ data Point dim a = Point (Data dim a) deriving Show
 pointFromList :: [a] -> Point dim a
 pointFromList xs = Point $ Data xs
 
-pointtoList :: Point dim a -> [a]
-pointtoList (Point (Data xs)) = xs
+pointToList :: Point dim a -> [a]
+pointToList (Point (Data xs)) = xs
 
 mapPoint :: (a -> b) -> Point dim a -> Point dim b
 mapPoint f (Point (Data xs)) = Point $ Data $ P.map f xs
