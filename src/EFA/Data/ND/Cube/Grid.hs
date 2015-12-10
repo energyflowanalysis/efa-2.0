@@ -74,7 +74,7 @@ toVector = DV.fromList . Trav.traverse (DV.toList . Axis.getVec)
 sizes ::
   (DV.Storage vec a, DV.Length vec) =>
   Grid typ dim label vec a -> ND.Data dim Int
-sizes = ND.map Axis.len
+sizes = fmap Axis.len
 
 
 -- | Remove axes of specified dimensions
@@ -83,8 +83,8 @@ extract ::
   Grid typ dim label vec a ->
   ND.Data dim2 ND.Idx ->
   Grid typ dim2 label vec a
-extract caller grid dims = ND.map f dims
-  where f dim = ND.lookup (caller |> nc "extract") grid dim
+extract caller grid =
+  fmap (ND.lookup (caller |> nc "extract") grid)
 
 -- | Generate a complete index room, but restrain index for dimension to be reduced to the specified value
 reductionIndexVector ::
