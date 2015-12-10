@@ -14,6 +14,8 @@ import qualified EFA.Data.Axis.Strict as Axis
 --import EFA.Data.Axis(Strict(..))
 
 import qualified Data.Map as Map
+import qualified Data.Traversable as Trav
+import qualified Data.Foldable as Fold
 
 m :: ModuleName
 m = ModuleName "Grid"
@@ -32,24 +34,19 @@ type DimIdx dim = ND.Data dim Axis.Idx
 
 newtype LinIdx = LinIdx {getInt:: Int} deriving (Show,Eq)
 
-dimensionMultiplicators ::
-  (DV.Storage vec a, DV.Length vec) =>
-  Grid typ dim label vec a -> ND.Data dim Int
-dimensionMultiplicators (ND.Data axes) = ND.Data $ (init $ map Axis.len axes) ++ [1]
-
 toLinear ::
  (DV.Storage vec a, DV.Length vec)=>
   Grid typ dim label vec a -> DimIdx dim -> LinIdx
-toLinear axes (ND.Data indices) = LinIdx $
-  foldl (+) (0) $ zipWith (*)
-  (map Axis.getInt indices) (ND.toList $ dimensionMultiplicators axes)
+toLinear axes indices = LinIdx $
+  Fold.foldl (\cum (ax, Axis.Idx idx) -> cum * Axis.len ax + idx) 0 $
+  ND.zip axes indices
 
 fromLinear ::
   (DV.Storage vec a, DV.Length vec) =>
   Grid typ dim label vec a -> LinIdx -> DimIdx dim
-fromLinear axes (LinIdx idx) = ND.Data $ (map Axis.Idx . snd) $
-                               foldl f (idx,[]) $ ND.toList $ dimensionMultiplicators axes
-  where f (rest,list) x = (mod rest x,list++[div rest x])
+fromLinear axes (LinIdx idx) =
+  fmap Axis.Idx $ snd $
+  Trav.mapAccumR (\r ax -> divMod r (Axis.len ax)) idx axes
 
 create ::
   (ND.Dimensions dim,

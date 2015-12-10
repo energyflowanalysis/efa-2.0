@@ -8,6 +8,8 @@ import EFA.Utility(Caller,genCaller,merror,ModuleName(..))
 import qualified EFA.Reference.Base as Ref
 
 import qualified Data.Map as Map
+import Data.Traversable (Traversable, traverse)
+import Data.Foldable (Foldable, foldMap)
 import Data.Maybe.HT (toMaybe)
 import Data.Maybe (fromMaybe)
 
@@ -42,6 +44,12 @@ instance Ref.ToData a => Ref.ToData (Data dim a) where
 instance Functor (Data dim) where
   fmap f (Data xs) = Data (fmap f xs)
 
+instance Foldable (Data dim) where
+  foldMap f (Data xs) = foldMap f xs
+
+instance Traversable (Data dim) where
+  traverse f (Data xs) = fmap Data $ traverse f xs
+
 data Idx = Idx Int deriving (Show,Eq,Ord)
 
 map :: (a -> b) -> Data dim a -> Data dim b
@@ -49,6 +57,9 @@ map f (Data xs) = Data (P.map f xs)
 
 imap :: (Idx -> a -> b) -> Data dim a -> Data dim b
 imap f (Data xs) = Data $ P.zipWith f (P.map Idx [0..]) xs
+
+zip :: Data dim a -> Data dim b -> Data dim (a,b)
+zip (Data xs) (Data ys) = Data (P.zip xs ys)
 
 len :: Data dim a -> Int
 len (Data xs) = length xs
