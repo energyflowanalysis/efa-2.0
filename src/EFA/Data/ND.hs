@@ -18,9 +18,11 @@ import qualified Prelude as P
 m:: ModuleName
 m = ModuleName "Space"
 
-data Dim1
+data Dim0
 data Succ a
+type Succ2 a = Succ (Succ a)
 
+type Dim1 = Succ Dim0
 type Dim2 = Succ Dim1
 type Dim3 = Succ Dim2
 type Dim4 = Succ Dim3
@@ -61,9 +63,10 @@ fromList caller xs =
           "list length doesn't match dimension"
 
 class Dimensions dim where
-  switchDim :: f Dim1 -> (forall dimi. Dimensions dimi => f (Succ dimi)) -> f dim
+  switchDim ::
+    f Dim0 -> (forall dimi. Dimensions dimi => f (Succ dimi)) -> f dim
 
-instance Dimensions Dim1 where switchDim f _ = f
+instance Dimensions Dim0 where switchDim f _ = f
 instance Dimensions dim => Dimensions (Succ dim) where switchDim _ f = f
 
 newtype DimNum a dim = DimNum {getDimNum :: Data dim a -> Int}
@@ -72,16 +75,15 @@ num :: Dimensions dim => Data dim a -> Int
 num =
   getDimNum $
   switchDim
-    (DimNum $ const 1)
+    (DimNum $ const 0)
     (DimNum $ succ . num . tail (genCaller m "num"))
 
 
 tail :: Caller -> Data (Succ dim) a -> Data dim a
 tail caller (Data []) = merror caller m "tail" "no dimension left"
-tail caller (Data [_]) = merror caller m "tail" "no dimension left"
 tail _ (Data (_:xs)) = Data xs
 
-head :: Caller -> Data dim a -> a
+head :: Caller -> Data (Succ dim) a -> a
 head caller (Data []) = merror caller m "head" "no first dimension"
 head _ (Data (x:_)) = x
 

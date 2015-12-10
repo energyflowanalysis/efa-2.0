@@ -186,7 +186,8 @@ getSubCube caller (Cube grid (Data vec)) (Strict.Idx idx) = Cube (ND.tail (calle
 newtype Interpolate label vec typ a b dim =
   Interpolate {
     runInterpolate ::
-      Cube typ dim label vec a b -> ND.Data dim a -> Interp.Val b
+      Cube typ (ND.Succ dim) label vec a b ->
+      ND.Data (ND.Succ dim) a -> Interp.Val b
   }
 
 interpolate ::
@@ -199,8 +200,8 @@ interpolate ::
    DV.Storage vec b, DV.Slice vec) =>
   Caller ->
   ((a,a) -> (b,b) -> a -> Interp.Val b) ->
-  Cube typ dim label vec a b ->
-  ND.Data dim a ->
+  Cube typ (ND.Succ dim) label vec a b ->
+  ND.Data (ND.Succ dim) a ->
   Interp.Val b
 interpolate caller interpFunction =
   runInterpolate $
@@ -241,8 +242,8 @@ interpolateSucc ::
    DV.Storage vec b, DV.Slice vec) =>
   Caller ->
   ((a,a) -> (b,b) -> a -> Interp.Val b) ->
-  Cube typ (ND.Succ dim) label vec a b ->
-  ND.Data (ND.Succ dim) a ->
+  Cube typ (ND.Succ2 dim) label vec a b ->
+  ND.Data (ND.Succ2 dim) a ->
   Interp.Val b
 interpolateSucc caller interpFunction cube coordinates = Interp.combine3 y1 y2 y
   where
@@ -267,7 +268,7 @@ to2DSignal ::
      DV.Storage vec a,
      DV.Length vec) =>
     Caller ->
-    Cube typ dim label vec a b ->
+    Cube typ (ND.Succ dim) label vec a b ->
     Sig.TC Sig.Signal t (SD.Data (vec :> vec :> Nil) b)
 to2DSignal caller (Cube grid (Data vec)) = Sig.TC $ SD.Data $ DV.imap f $ Strict.getVec axis
       where
