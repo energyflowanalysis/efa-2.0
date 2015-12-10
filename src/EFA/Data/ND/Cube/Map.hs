@@ -24,7 +24,7 @@ import qualified Data.Map as Map
 import EFA.Data.Interpolation as Interp
 
 import qualified Prelude as P
-import Prelude hiding (zipWith, map, foldl)
+import Prelude hiding (zipWith, map, foldl, lookup)
 import Data.Maybe(fromMaybe)
 
 import EFA.Utility.Trace(mytrace)
@@ -62,13 +62,13 @@ lookupLinUnsafe ::
   Cube typ dim label vec a b -> Grid.LinIdx -> b
 lookupLinUnsafe (Cube _ (Data vec)) (Grid.LinIdx idx) = DV.lookupUnsafe vec idx
 
-lookUp ::
+lookup ::
   (DV.LookupMaybe vec b,
    DV.Storage vec a,Show (vec b),
    DV.Length vec) =>
   Caller -> Grid.DimIdx dim -> Cube typ dim label vec a b -> b
-lookUp caller idx cube@(Cube grid _) = lookupLin (caller |> nc "lookUp") cube index
-  where index = Grid.toLinear grid idx
+lookup caller idx cube@(Cube grid _) =
+  lookupLin (caller |> nc "lookup") cube $ Grid.toLinear grid idx
 
 checkVector ::
   (DV.Storage vec b, DV.Length vec,DV.Storage vec a) =>
@@ -226,8 +226,8 @@ interpolate1 caller interpFunction cube coordinates = Interp.combine3 y1 y2 y
            getGrid $ mytrace 0 "interpolate" "cube" $ cube
     x = ND.head newCaller $ coordinates
     ((idx1,idx2),(x1,x2)) = Strict.getSupportPoints axis x
-    y1 = Interp.Inter $ lookUp newCaller (ND.Data [idx1]) cube
-    y2 = Interp.Inter $ lookUp newCaller (ND.Data [idx2]) cube
+    y1 = Interp.Inter $ lookup newCaller (ND.Data [idx1]) cube
+    y2 = Interp.Inter $ lookup newCaller (ND.Data [idx2]) cube
     y = interpFunction (x1,x2) (Interp.unpack y1,Interp.unpack y2) x
 
 interpolateSucc ::

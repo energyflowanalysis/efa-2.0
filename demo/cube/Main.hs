@@ -42,10 +42,10 @@ main = do
   let z12 = Cube.lookupLin caller o (Grid.LinIdx 1)
   let z21 = Cube.lookupLin caller o (Grid.LinIdx 2)
   let z22 = Cube.lookupLin caller o (Grid.LinIdx 3)
-  let z11' = Cube.lookUp caller (ND.Data $ map Axis.Idx [0,0]) o
-  let z12' = Cube.lookUp caller (ND.Data $ map Axis.Idx [0,1]) o
-  let z21' = Cube.lookUp caller (ND.Data $ map Axis.Idx [1,0]) o
-  let z22' = Cube.lookUp caller (ND.Data $ map Axis.Idx [1,1]) o
+  let z11' = Cube.lookup caller (ND.Data $ map Axis.Idx [0,0]) o
+  let z12' = Cube.lookup caller (ND.Data $ map Axis.Idx [0,1]) o
+  let z21' = Cube.lookup caller (ND.Data $ map Axis.Idx [1,0]) o
+  let z22' = Cube.lookup caller (ND.Data $ map Axis.Idx [1,1]) o
 
   let x1 = V.fromList [1,2]
   let y1 = V.fromList [3,4]
