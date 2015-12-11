@@ -4,17 +4,11 @@
 
 module EFA.Reference.Base where
 
-import EFA.Utility.Filename(-- (+++),
-                            FPath(..),DirPath(..),
-                            --Abs,
-                            Rel
-                            --Directory(..),FileName(..),
-                            --fromString,filename
-                             )
-
 import EFA.Utility(Caller,
                    -- merror,(|>),
                    ModuleName(..),FunctionName, genCaller)
+
+import qualified System.Path as Path
 
 import qualified Data.Map as Map
 import qualified Data.Ratio as Ratio
@@ -43,7 +37,7 @@ type Type = String
 type Value = String
 type Name = String
 
-data Test = Test (DirPath Rel) (Map.Map (FPath Rel) Data) deriving (Eq,Show)
+data Test = Test Path.RelDir (Map.Map Path.RelFile Data) deriving (Eq,Show)
 
 data Data = DataMap Type (Map.Map String Data)
             | StringData Type String
