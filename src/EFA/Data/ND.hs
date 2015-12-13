@@ -1,3 +1,7 @@
+{- |
+This is an attempt to create something similar to the @repa@ package
+but in the future we should replace it by @repa@.
+-}
 module EFA.Data.ND where
 
 import qualified EFA.Reference.Base as Ref
