@@ -7,8 +7,9 @@ module EFA.Utility.FixedLength (
    Wrap(Wrap, unwrap),
    WrapPos(WrapPos, unwrapPos),
    Zero, Succ(Stop, Succ),
+   toList, equal, showsPrec,
    map, zipWith, sequenceA, repeat,
-   index, update, indices, numFromPos,
+   index, update, indices, indicesInt, numFromPos,
    N0, N1, N2, N3, N4, N5, N6, N7, N8,
    GE1, GE2, GE3, GE4, GE5, GE6, GE7, GE8,
    i0, i1, i2, i3, i4, i5, i6, i7,
@@ -20,12 +21,16 @@ import qualified Data.Empty as Empty
 
 import qualified Control.Applicative as App
 import qualified Data.Traversable as Trav
+import qualified Data.Foldable as Fold
+import qualified Data.List as List
 import Control.Applicative (Applicative, liftA2)
 import Data.Traversable (Traversable, foldMapDefault)
 import Data.Foldable (Foldable, foldMap)
 import Data.Word (Word)
+import Text.Show.HT (concatS)
 
-import Prelude hiding (map, zipWith, repeat)
+import qualified Prelude as P
+import Prelude hiding (map, zipWith, repeat, showsPrec)
 
 
 class (list ~ List (Position list)) => C list where
@@ -50,6 +55,19 @@ instance C list => C (NonEmpty.T list) where
 end :: Empty.T a
 end = Empty.Cons
 
+
+equal :: (C list, Eq a) => list a -> list a -> Bool
+equal xs ys = Fold.and $ Wrap $ zipWith (==) xs ys
+
+showsPrec :: (C list, Show a) => Int -> list a -> ShowS
+showsPrec p =
+   P.showParen (p>5) . concatS .
+   List.intersperse (P.showString "!:") .
+   (++ [P.showString "end"]) .
+   List.map (P.showsPrec 6) . toList
+
+toList :: (C list) => list a -> [a]
+toList = Fold.toList . Wrap
 
 newtype Wrap list a = Wrap {unwrap :: list a}
 
@@ -158,6 +176,10 @@ indicesPos =
 
 indices :: C list => list (WrapPos list)
 indices = map WrapPos indicesPos
+
+indicesInt :: C list => list Int
+indicesInt =
+   unwrap $ NonEmpty.init $ NonEmpty.scanl (+) 0 $ App.pure 1
 
 
 newtype WrapPos list = WrapPos {unwrapPos :: Position list}

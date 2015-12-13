@@ -1,5 +1,4 @@
 {-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE UndecidableInstances #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE EmptyDataDecls #-}
 
@@ -11,11 +10,12 @@ import EFA.Flow.Part.Index (State)
 import qualified EFA.Flow.Topology.Index as TopoIdx
 
 import qualified Data.List as List
+import Data.List.HT (chop)
 import Data.Time.Clock (UTCTime)
+import Data.Char (isSpace)
 
 import qualified System.FilePath.Posix as SFP
 
-import qualified Data.List.Split as Split
 
 modul :: ModuleName
 modul = ModuleName "EFA.Utility.Filename"
@@ -27,23 +27,25 @@ class Filename a where
   filename :: a -> String
 
 
+class FilenameList a where
+  filenameFromList :: [a] -> String
 
-instance Filename String where
-  filename = map f
-    where f ' ' = '_'
-          f x = x
+instance FilenameList a => Filename [a] where
+  filename = filenameFromList
 
+
+
+instance FilenameList Char where
+  filenameFromList = fillSpaces
 
 instance Filename State where
-  filename = map f . show
-    where f ' ' = '_'
-          f x = x
-
+  filename = fillSpaces . show
 
 instance Filename UTCTime where
-  filename = map f . show
-    where f ' ' = '_'
-          f x = x
+  filename = fillSpaces . show
+
+fillSpaces :: String -> String
+fillSpaces = map (\c -> if isSpace c then '_' else c)
 
 
 instance (Filename a, Filename b) => Filename (a, b) where
@@ -52,17 +54,19 @@ instance (Filename a, Filename b) => Filename (a, b) where
 instance Filename Double where
   filename = show
 
-instance Filename [Double] where
-  filename =
-    ('[':) . (++ "]") . List.intercalate "_" . map filename
+instance FilenameList Double where
+  filenameFromList = filenameList
 
 
 instance (Filename node) => Filename (TopoIdx.Position node) where
   filename (TopoIdx.Position f t) = filename f ++ "->" ++ filename t
 
 
-instance (Filename node) => Filename [TopoIdx.Position node] where
-  filename =
+instance (Filename node) => FilenameList (TopoIdx.Position node) where
+  filenameFromList = filenameList
+
+filenameList :: (Filename name) => [name] -> String
+filenameList =
     ('[':) . (++ "]") . List.intercalate "_" . map filename
 
 
@@ -116,22 +120,24 @@ instance FromString FileName where
 
 instance FromString (DirPath Abs) where
   fromString caller str | length str >= 2 = if SFP.isValid str && last str =='/' && head str == '/'
-        then DirPath $ map Directory $ filter (/=[]) $ Split.splitOn "/" str
+        then DirPath $ map Directory $ splitPathString str
         else merror caller modul "fromString" ("Path not correct: " ++ show str)
   fromString caller str = merror caller modul "fromString" ("Path too short: " ++ show str)
 
 instance FromString (FPath Abs) where
   fromString caller str | length str >= 2 = if SFP.isValid str && head str == '/'
-        then let xs = filter (/=[]) $ Split.splitOn "/" str in FPath (map Directory $ init xs) (FileName $ last xs)
+        then let xs = splitPathString str in FPath (map Directory $ init xs) (FileName $ last xs)
         else merror caller modul "fromString" ("Path not correct: " ++ show str)
   fromString caller str = merror caller modul "fromString" ("Path too short: " ++ show str)
 
 instance FromString (FPath Rel) where
   fromString caller str | length str >= 2 = if SFP.isValid str
-        then let xs = filter (/=[]) $ Split.splitOn "/" str in FPath (map Directory $ init xs) (FileName $ last xs)
+        then let xs = splitPathString str in FPath (map Directory $ init xs) (FileName $ last xs)
         else merror caller modul "fromString" ("Path not correct: " ++ show str)
   fromString caller str = merror caller modul "fromString" ("Path too short: " ++ show str)
 
+splitPathString :: String -> [String]
+splitPathString = filter (/=[]) . chop ('/'==)
 
 
 class Append a x b y where
