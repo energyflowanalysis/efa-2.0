@@ -131,8 +131,7 @@ plotMaps terminal func title =
             (title ++ ", " ++ show state)
             t
             id
-            -- id
-            (Graph3D.typ "lines")
+            id -- (Graph3D.typ "lines")
             frameOpts varLocalPower varRestPower
             (func mat)
 
@@ -161,7 +160,7 @@ plotSweeps terminal func title =
             (title ++ ", " ++ show state)
             t
             id
-            (Graph3D.typ "lines")
+            id -- (Graph3D.typ "lines")
             (Opts.key False . frameOpts) varLocalPower varRestPower
             (func mat)
 
@@ -397,7 +396,7 @@ stateRange terminal =
   AppPlot.surfaceWithOpts "StateRanges"
             terminal
             id
-            (Graph3D.typ "lines")
+            id -- (Graph3D.typ "lines")
             frameOpts varLocalPower varRestPower
   . Map.elems
   . Map.mapWithKey (\state@(Idx.State st)  -> label (show state) . to2DMatrix . fmap (m2n . fmap (f st)))
@@ -640,7 +639,7 @@ plotOptimal terminal f title =
   AppPlot.surfaceWithOpts title
             terminal
             id
-            (Graph3D.typ "lines")
+            id -- (Graph3D.typ "lines")
             frameOpts varLocalPower varRestPower
   . Map.elems
   . Map.mapWithKey (\state -> label (show state) . to2DMatrix . fmap (m2n . fmap (f state)))
