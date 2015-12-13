@@ -309,7 +309,7 @@ The set cover algorithm finds a solution
 where for each edge a tail and a head is chosen by the connected nodes.
 If both tail and head are not assigned to nodes
 then the undirected edges jump in.
-This is expressed by 'setCoverUnDirEdges'.
+This is expressed by 'setCoverUndirEdges'.
 Additionally, 'setCoverDirEdges' needs to add a node identification
 in order to make sure that every node is considered only once.
 -}
@@ -318,16 +318,16 @@ data SetCoverItem node =
    | SetCoverEdge (Graph.DirEdge node) Topo.StoreDir
    deriving (Eq, Ord)
 
-setCoverUnDirEdges, setCoverDirEdges ::
+setCoverUndirEdges, setCoverDirEdges ::
    (Node.C node) =>
    Topology node ->
    [SetCover.Assign [Graph.EitherEdge node] (Set (SetCoverItem node))]
-setCoverUnDirEdges topo =
+setCoverUndirEdges topo =
    Map.elems $
    Map.mapWithKey
       (\e _ ->
          SetCover.assign
-            [Graph.eUnDirEdge (Graph.from e) (Graph.to e)]
+            [Graph.eUndirEdge (Graph.from e) (Graph.to e)]
             (Set.fromList [SetCoverEdge e Topo.In, SetCoverEdge e Topo.Out])) $
    Graph.edgeLabels topo
 
@@ -397,15 +397,15 @@ identify ::
    Topology node -> [Graph.EitherEdge node] -> [FlowTopology node]
 identify topo givenEdges =
    let edges = Graph.edges topo
-       unDirEdge edge = Graph.unDirEdge (Graph.from edge) (Graph.to edge)
-       givenEdgeSet = Set.fromList $ map unDirEdge givenEdges
+       undirEdge edge = Graph.undirEdge (Graph.from edge) (Graph.to edge)
+       givenEdgeSet = Set.fromList $ map undirEdge givenEdges
    in  if Set.isSubsetOf givenEdgeSet
-             (Set.fromList $ map unDirEdge edges)
+             (Set.fromList $ map undirEdge edges)
          then
             complement
                (Graph.fromMap (nodeDegrees topo)
                   (Map.fromList $ map (flip (,) ()) givenEdges)) $
-            filter (\edge -> not $ Set.member (unDirEdge edge) givenEdgeSet) $
+            filter (\edge -> not $ Set.member (undirEdge edge) givenEdgeSet) $
             edges
          else error "StateAnalysis.identify: given edge is not contained in topology"
 
@@ -544,7 +544,7 @@ clustering topo =
 setCover :: (Node.C node) => Topology node -> [FlowTopology node]
 setCover topo =
    map (replaceEdges topo . concat) $
-   SetCover.partitions $ setCoverUnDirEdges topo ++ setCoverDirEdges topo
+   SetCover.partitions $ setCoverUndirEdges topo ++ setCoverDirEdges topo
 
 
 advanced :: (Node.C node) => Topology node -> [FlowTopology node]

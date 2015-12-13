@@ -28,7 +28,7 @@ formatEdge ee =
          Format.unUnicode (Node.display x) ++
          "->" ++
          Format.unUnicode (Node.display y)
-      Graph.EUnDirEdge (Graph.UnDirEdge x y) ->
+      Graph.EUndirEdge (Graph.UndirEdge x y) ->
          Format.unUnicode (Node.display x) ++
          "--" ++
          Format.unUnicode (Node.display y)

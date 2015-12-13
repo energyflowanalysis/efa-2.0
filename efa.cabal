@@ -39,6 +39,7 @@ Library
     random >=1.0 && <1.2,
     Stream >=0.4.6 && <0.5,
     non-empty >=0.2 && <0.4,
+    comfort-graph >=0.0 && <0.1,
     bimap >=0.2.4 && <0.4,
     containers >=0.4 && <0.6,
     data-accessor-transformers >=0.2.1 && <0.3,

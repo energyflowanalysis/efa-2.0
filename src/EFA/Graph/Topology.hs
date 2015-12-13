@@ -23,7 +23,7 @@ import qualified Data.Foldable as Fold
 
 
 isActive :: Graph.EitherEdge node -> Bool
-isActive (Graph.EUnDirEdge _) = False
+isActive (Graph.EUndirEdge _) = False
 isActive (Graph.EDirEdge _) = True
 
 anyActive :: Map (Graph.EitherEdge node) () -> Bool
@@ -31,8 +31,8 @@ anyActive = Fold.any isActive . Map.keysSet
 
 
 {-
-Should Topology have an UnDirEdge?
-UnDirEdge could be read as "canonically oriented" edge.
+Should Topology have an UndirEdge?
+UndirEdge could be read as "canonically oriented" edge.
 -}
 type Topology node = Graph node Graph.DirEdge () ()
 
@@ -50,7 +50,7 @@ plainFromFlow =
       (\e ->
          case e of
             Graph.EDirEdge de -> de
-            Graph.EUnDirEdge ue -> Graph.DirEdge (Graph.from ue) (Graph.to ue))
+            Graph.EUndirEdge ue -> Graph.DirEdge (Graph.from ue) (Graph.to ue))
 
 plainFromLabeled :: Graph node edge nl el -> Graph node edge () ()
 plainFromLabeled = Graph.mapNode (const ()) . Graph.mapEdge (const ())

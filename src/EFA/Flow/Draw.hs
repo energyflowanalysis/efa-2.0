@@ -611,7 +611,7 @@ orientFlowEdge ::
    (DirEdge node, Viz.DirType, Order)
 orientFlowEdge e =
    case e of
-      Graph.EUnDirEdge ue -> (orientUndirEdge ue, Viz.NoDir, Id)
+      Graph.EUndirEdge ue -> (orientUndirEdge ue, Viz.NoDir, Id)
       Graph.EDirEdge de -> orientDirEdge de
 
 orientEdge ::
@@ -619,11 +619,11 @@ orientEdge ::
    Graph.EitherEdge node -> (DirEdge node, Viz.DirType, Order)
 orientEdge e =
    case e of
-      Graph.EUnDirEdge ue -> (orientUndirEdge ue, Viz.NoDir, Id)
+      Graph.EUndirEdge ue -> (orientUndirEdge ue, Viz.NoDir, Id)
       Graph.EDirEdge de -> orientDirEdge de
 
-orientUndirEdge :: Ord node => Graph.UnDirEdge node -> DirEdge node
-orientUndirEdge (Graph.UnDirEdge x y) = DirEdge x y
+orientUndirEdge :: Ord node => Graph.UndirEdge node -> DirEdge node
+orientUndirEdge (Graph.UndirEdge x y) = DirEdge x y
 
 orientDirEdge ::
    (Ord node) =>

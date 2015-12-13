@@ -309,7 +309,7 @@ sectionFromPlain gr =
    Graph.mapEdgeWithKey
       (\ee _ ->
          case ee of
-            Graph.EUnDirEdge _ -> Nothing
+            Graph.EUndirEdge _ -> Nothing
             Graph.EDirEdge _ -> Just $ pure unknown) gr
 
 unknownTopologyNodes ::

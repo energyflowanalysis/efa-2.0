@@ -98,7 +98,7 @@ dirEdge :: node -> node -> Graph.EitherEdge node
 dirEdge = Graph.eDirEdge
 
 undirEdge :: (Node.C node) => node -> node -> Graph.EitherEdge node
-undirEdge = Graph.eUnDirEdge
+undirEdge = Graph.eUndirEdge
 
 identifyFlowState ::
    (Node.C node) =>
@@ -251,7 +251,7 @@ nestM n act = foldr (>=>) return (replicate n act)
 
 
 
-data Orientation = Dir | UnDir deriving Show
+data Orientation = Dir | Undir deriving Show
 
 absoluteStateIndex ::
   (Node.C node) =>
@@ -264,16 +264,16 @@ absoluteStateIndex topo flowTopo =
       flabels = Map.fromList $ map unEDir $ Map.keys $ Graph.edgeLabels flowTopo
 
       unEDir (Graph.EDirEdge (Graph.DirEdge f t)) = ((f, t), Dir)
-      unEDir (Graph.EUnDirEdge (Graph.UnDirEdge f t)) = ((f, t), UnDir)
+      unEDir (Graph.EUndirEdge (Graph.UndirEdge f t)) = ((f, t), Undir)
 
       unEitherEDir (Graph.DirEdge f t) = (f, t)
 
       g k@(f, t) =
         case (Map.lookup k flabels, Map.lookup (t, f) flabels) of
              (Just Dir, _) -> 0
-             (Just UnDir, _) -> 1
+             (Just Undir, _) -> 1
              (_, Just Dir) -> 2
-             (_, Just UnDir) -> 1
+             (_, Just Undir) -> 1
              _ -> error $ "EFA.Graph.Topology.flowNumber: edge not found "
                           ++ Format.showRaw (Node.display f :: Format.ASCII)
                           ++ "->"
@@ -294,16 +294,16 @@ absoluteStateIndex' topo flowTopo =
       flabels = Map.fromList $ map unEDir $ Map.keys $ Graph.edgeLabels flowTopo
 
       unEDir (Graph.EDirEdge (Graph.DirEdge f t)) = ((f, t), Dir)
-      unEDir (Graph.EUnDirEdge (Graph.UnDirEdge f t)) = ((f, t), UnDir)
+      unEDir (Graph.EUndirEdge (Graph.UndirEdge f t)) = ((f, t), Undir)
 
       unEitherEDir (Graph.DirEdge f t) = (f, t)
 
       g k@(f, t) =
         case (Map.lookup k flabels, Map.lookup (t, f) flabels) of
              (Just Dir, _) -> 0
-             (Just UnDir, _) -> 1
+             (Just Undir, _) -> 1
              (_, Just Dir) -> 2
-             (_, Just UnDir) -> 1
+             (_, Just Undir) -> 1
              _ -> error $ "EFA.Graph.Topology.flowNumber: edge not found "
                           ++ Format.showRaw (Node.display f :: Format.ASCII)
                           ++ "->"

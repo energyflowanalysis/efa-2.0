@@ -74,10 +74,10 @@ liftEdgeFlow f =
    switchEdgeFlow (const Nothing) (\edge flow -> Just $ f edge flow)
 
 switchEdgeFlow ::
-   (Graph.UnDirEdge node -> a) ->
+   (Graph.UndirEdge node -> a) ->
    (Graph.DirEdge node -> flow -> a) ->
    Graph.EitherEdge node -> Maybe flow -> a
-switchEdgeFlow f _ (Graph.EUnDirEdge edge) Nothing = f edge
+switchEdgeFlow f _ (Graph.EUndirEdge edge) Nothing = f edge
 switchEdgeFlow _ f (Graph.EDirEdge edge) (Just flow) = f edge flow
 switchEdgeFlow _ _ _ _ =
    error $
@@ -92,7 +92,7 @@ dirFromGraph =
    Graph.mapMaybeEdgeKeys $ \ee ->
       case ee of
          Graph.EDirEdge de -> Just de
-         Graph.EUnDirEdge _ -> Nothing
+         Graph.EUndirEdge _ -> Nothing
 
 dirFromFlowGraph ::
    (Ord n) =>
