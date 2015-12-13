@@ -17,7 +17,7 @@ import qualified EFA.Graph.Topology.Node as Node
 import qualified EFA.Graph.Topology as Topo
 import qualified EFA.Graph as Graph
 import EFA.Graph.Topology (Topology)
-import EFA.Graph (DirEdge(DirEdge), unDirEdge)
+import EFA.Graph (DirEdge(DirEdge))
 
 import qualified EFA.Signal.Signal as Signal
 import qualified EFA.Signal.Vector as SV
@@ -69,16 +69,13 @@ flowTopologyFromRecord topo (Record time fs) =
          in  case fromScalar $ Signal.sign $ Signal.sum normal of
                 Positive ->
                    Map.singleton
-                      (Graph.EDirEdge $ DirEdge idx1 idx2)
+                      (Graph.eDirEdge idx1 idx2)
                       (Just $ Flow {flowOut = normal, flowIn = opposite})
                 Negative ->
                    Map.singleton
-                      (Graph.EDirEdge $ DirEdge idx2 idx1)
+                      (Graph.eDirEdge idx2 idx1)
                       (Just $ Flow {flowOut = Signal.neg opposite, flowIn = Signal.neg normal})
-                Zero ->
-                   Map.singleton
-                      (Graph.EUnDirEdge $ unDirEdge idx1 idx2)
-                      Nothing) $
+                Zero -> Map.singleton (Graph.eUnDirEdge idx1 idx2) Nothing) $
    Graph.edgeLabels topo
 
 fromSection ::

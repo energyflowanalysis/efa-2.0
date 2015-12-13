@@ -327,7 +327,7 @@ setCoverUnDirEdges topo =
    Map.mapWithKey
       (\e _ ->
          SetCover.assign
-            [Graph.EUnDirEdge $ Graph.unDirEdge (Graph.from e) (Graph.to e)]
+            [Graph.eUnDirEdge (Graph.from e) (Graph.to e)]
             (Set.fromList [SetCoverEdge e Topo.In, SetCoverEdge e Topo.Out])) $
    Graph.edgeLabels topo
 
