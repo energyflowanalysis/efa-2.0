@@ -57,7 +57,7 @@ import qualified EFA.Utility.Map as MapU
 import EFA.Utility ((>>!))
 
 import Data.GraphViz (
-          GraphID(Int, Str),
+          GraphID(Num, Str), Number(Int),
           GlobalAttributes(GraphAttrs),
           DotEdge(DotEdge),
           DotGraph(DotGraph),
@@ -69,7 +69,7 @@ import Data.GraphViz (
           graphID)
 
 import Data.GraphViz.Attributes.Complete (
-          Attribute(Color, FillColor), Color(RGB),
+          Attribute(Color, FillColor), Color(RGB), toColorList,
           )
 
 import qualified Data.GraphViz.Commands as VizCmd
@@ -99,13 +99,13 @@ import Prelude hiding (sin, reverse, init, last, sequence, (.))
 
 
 topologyEdgeColour :: Attribute
-topologyEdgeColour = Color [RGB 0 0 200]
+topologyEdgeColour = Color $ toColorList [RGB 0 0 200]
 
 carryEdgeColour :: Attribute
-carryEdgeColour = Color [RGB 200 0 0]
+carryEdgeColour = Color $ toColorList [RGB 200 0 0]
 
 contentEdgeColour :: Attribute
-contentEdgeColour = Color [RGB 0 200 0]
+contentEdgeColour = Color $ toColorList [RGB 0 200 0]
 
 shape :: Node.Type -> Viz.Shape
 shape Node.Crossing = Viz.PlainText
@@ -117,8 +117,8 @@ shape Node.Storage = Viz.Ellipse
 shape _ = Viz.BoxShape
 
 color :: Node.Type -> Attribute
-color Node.Storage = FillColor [RGB 251 177 97] -- ghlightorange
-color _ = FillColor [RGB 136 215 251]  -- ghverylightblue
+color Node.Storage = FillColor $ toColorList [RGB 251 177 97] -- ghlightorange
+color _ = FillColor $ toColorList [RGB 136 215 251]  -- ghverylightblue
 
 nodeAttrs :: Node.Type -> Attribute -> [Attribute]
 nodeAttrs nt label =
@@ -303,7 +303,7 @@ modifyTitle str =
 
 bgcolour :: X11Colors.X11Color -> DotGraph T.Text -> DotGraph T.Text
 bgcolour c =
-   setGlobalAttrs $ GraphAttrs [Viz.BgColor [Colors.X11Color c]]
+   setGlobalAttrs $ GraphAttrs [Viz.BgColor $ toColorList [Colors.X11Color c]]
 
 
 pdf, png, eps, svg, plain, fig, dot :: FilePath -> DotGraph T.Text -> IO ()
@@ -529,7 +529,7 @@ dotFromTopology g =
    DotGraph {
       strictGraph = False,
       directedGraph = False,
-      graphID = Just (Int 1),
+      graphID = graphIDInt 1,
       graphStatements =
          DotStmts {
             attrStmts = [],
@@ -572,7 +572,7 @@ dotFromFlowTopology ::
    (Node.C node) =>
    Int -> FlowTopology node -> DotSubGraph T.Text
 dotFromFlowTopology ident topo =
-   DotSG True (Just (Int ident)) $
+   DotSG True (graphIDInt ident) $
    DotStmts
       [GraphAttrs [labelFromString $ show ident]] []
       (map dotNode $ Graph.nodes topo)
@@ -1011,9 +1011,12 @@ dotDirGraph stmts =
    DotGraph {
       strictGraph = False,
       directedGraph = True,
-      graphID = Just (Int 1),
+      graphID = graphIDInt 1,
       graphStatements = stmts
    }
+
+graphIDInt :: Int -> Maybe GraphID
+graphIDInt = Just . Num . Int
 
 
 formatTime :: FormatValue a => a -> String

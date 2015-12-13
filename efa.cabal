@@ -27,7 +27,7 @@ Flag buildTools
 Library
   Build-Depends:
     time >= 1.4,
-    graphviz >=2999.13 && <2999.16,
+    graphviz >=2999.18 && <2999.19,
     gnuplot >=0.5.2 && <0.6,
     colour >=2.3 && <2.4,
     vector >=0.9 && <0.11,
