@@ -95,10 +95,10 @@ quantityTopology topo =
 
 
 dirEdge :: node -> node -> Graph.EitherEdge node
-dirEdge x y = Graph.EDirEdge $ Graph.DirEdge x y
+dirEdge = Graph.eDirEdge
 
 undirEdge :: (Node.C node) => node -> node -> Graph.EitherEdge node
-undirEdge x y = Graph.EUnDirEdge $ Graph.UnDirEdge x y
+undirEdge = Graph.eUnDirEdge
 
 identifyFlowState ::
    (Node.C node) =>

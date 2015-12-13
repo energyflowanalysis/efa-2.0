@@ -164,14 +164,14 @@ dim1 caller inmethod exmethod (x1, x2) (y1, y2) x =
 
 getPos :: (Eq a, Ord a) => (a,a) -> a -> Pos
 getPos (x1,x2) x =
-  case (x == x1, x > x1 , x < x2 , x == x2) of
-       (True,_,_,False) -> HitLeft
-       (False,_,_,True) -> HitRight
-       (True,_,_,True) -> Inside -- aplies when step in signal => x1=x2=x
-       (_,True,True,_) -> Inside
-       (_,False,True,_) -> Outside
-       (_,True,False,_) -> Outside
-       (_,_,_,_) -> Undefined -- error "Error in getPos - Impossible branch"
+  case (compare x x1, compare x x2) of
+       (EQ,EQ) -> Inside -- aplies when step in signal => x1=x2=x
+       (GT,LT) -> Inside
+       (EQ,LT) -> HitLeft
+       (GT,EQ) -> HitRight
+       (LT,LT) -> Outside
+       (GT,GT) -> Outside
+       _ -> Undefined -- error "Error in getPos - Impossible branch"
 
 
 combine3 :: Val a -> Val a -> Val a -> Val a

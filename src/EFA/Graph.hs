@@ -8,7 +8,7 @@ module EFA.Graph (
    Edge(from, to),
    DirEdge(DirEdge),
    UnDirEdge(UnDirEdge), unDirEdge,
-   EitherEdge(EDirEdge,EUnDirEdge),
+   EitherEdge(EDirEdge,EUnDirEdge), eDirEdge, eUnDirEdge,
 
    -- * construction
    empty, fromList, fromMap,
@@ -171,6 +171,12 @@ data
         EDirEdge (DirEdge node)
       | EUnDirEdge (UnDirEdge node)
    deriving (Eq, Ord, Show)
+
+eDirEdge :: node -> node -> EitherEdge node
+eDirEdge x y = EDirEdge $ DirEdge x y
+
+eUnDirEdge :: (Ord node) => node -> node -> EitherEdge node
+eUnDirEdge x y = EUnDirEdge $ unDirEdge x y
 
 
 instance TC.Eq DirEdge where eq = (==)
