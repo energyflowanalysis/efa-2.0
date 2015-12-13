@@ -28,8 +28,8 @@ import qualified EFA.Report.Format as Format
 
 import EFA.Symbolic.SumProduct ( Term )
 
-import qualified EFA.Utility.FixedLength as FL
-import EFA.Utility.FixedLength ((!:))
+import qualified Data.FixedLength as FL
+import Data.FixedLength ((!:))
 
 import qualified Control.Monad.Exception.Synchronous as ME
 

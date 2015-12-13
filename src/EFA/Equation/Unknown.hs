@@ -4,7 +4,7 @@ import qualified EFA.Equation.Record as Record
 import qualified EFA.Equation.Mix as Mix
 import EFA.Equation.Result (Result(Undetermined))
 
-import qualified EFA.Utility.FixedLength as FixedLength
+import qualified Data.FixedLength as FixedLength
 
 import Control.Applicative (Applicative, pure)
 

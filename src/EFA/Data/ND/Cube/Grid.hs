@@ -5,9 +5,9 @@ module EFA.Data.ND.Cube.Grid where
 import qualified EFA.Data.Vector as DV
 import qualified EFA.Data.ND as ND
 import qualified EFA.Data.Axis.Strict as Axis
-import qualified EFA.Utility.FixedLength as FL
 import EFA.Utility(Caller,ModuleName(..),(|>),FunctionName, genCaller)
 
+import qualified Data.FixedLength as FL
 import qualified Data.Map as Map
 import qualified Data.Traversable as Trav
 import qualified Data.Foldable as Fold

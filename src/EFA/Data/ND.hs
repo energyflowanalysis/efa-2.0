@@ -5,9 +5,9 @@ but in the future we should replace it by @repa@.
 module EFA.Data.ND where
 
 import qualified EFA.Reference.Base as Ref
-import qualified EFA.Utility.FixedLength as FL
 import EFA.Utility(Caller,merror,ModuleName(..))
 
+import qualified Data.FixedLength as FL
 import qualified Data.NonEmpty as NonEmpty
 import qualified Data.Map as Map
 import Data.Foldable (Foldable, fold)

@@ -38,6 +38,7 @@ Library
     pretty ==1.1.*,
     random >=1.0 && <1.2,
     Stream >=0.4.6 && <0.5,
+    fixed-length >=0.1.1 && <0.2,
     non-empty >=0.2 && <0.4,
     comfort-graph >=0.0 && <0.1,
     bimap >=0.2.4 && <0.4,
@@ -68,7 +69,6 @@ Library
     EFA.Utility.Async
     EFA.Utility.Bifunctor
     EFA.Utility.Map
-    EFA.Utility.FixedLength
     EFA.Utility.Stream
     EFA.Utility.TotalMap
     EFA.Utility.Trace
@@ -222,6 +222,7 @@ Test-Suite test-efa
     QuickCheck,
     containers,
     explicit-exception,
+    fixed-length,
     non-empty,
     utility-ht,
     vector,
@@ -435,6 +436,7 @@ Executable demo-additive-terms-static
     Build-Depends:
       efa,
       gnuplot,
+      fixed-length,
       non-empty,
       data-accessor,
       containers,
@@ -677,6 +679,7 @@ Executable demo-mix
   If flag(buildDemos)
     Build-Depends:
       efa,
+      fixed-length,
       base
   Else
     Buildable: False
@@ -701,6 +704,7 @@ Executable demo-cube
       efa,
       vector,
       containers,
+      fixed-length,
       non-empty,
 --      utility-ht,
 --      gnuplot,

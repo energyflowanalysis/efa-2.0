@@ -1,9 +1,6 @@
 import EFA.Data.ND.Cube.Map (Cube)
 import qualified EFA.Data.ND.Cube.Map as Cube
 
-import qualified EFA.Utility.FixedLength as FL
-import EFA.Utility.FixedLength (end, (!:))
-
 import EFA.Utility (genCaller,ModuleName(ModuleName))
 import qualified EFA.Signal.Signal as Sig
 import qualified EFA.Data.Axis.Strict as Axis
@@ -23,6 +20,9 @@ import EFA.Data.Vector.Type (Edge)
 
 
 import qualified EFA.Data.Interpolation as Interp
+
+import qualified Data.FixedLength as FL
+import Data.FixedLength (end, (!:))
 
 import qualified Data.Vector as V
 import qualified Data.Map as Map

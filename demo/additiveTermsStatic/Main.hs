@@ -34,10 +34,10 @@ import qualified EFA.Symbolic.OperatorTree as Op
 import qualified EFA.Report.Format as Format
 import EFA.Report.FormatValue (FormatValue, formatValue)
 
-import qualified EFA.Utility.FixedLength as FL
 
 import qualified Data.Foldable as Fold
 import qualified Data.Map as Map
+import qualified Data.FixedLength as FL
 import qualified Data.NonEmpty as NonEmpty
 import qualified Data.Empty as Empty
 import Data.NonEmpty ((!:))

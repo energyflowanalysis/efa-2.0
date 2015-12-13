@@ -42,13 +42,13 @@ import EFA.Equation.Arithmetic ((~+))
 
 import qualified EFA.Report.Format as Format
 
-import qualified EFA.Utility.FixedLength as FL
 import qualified EFA.Utility.Stream as Stream
 import EFA.Utility.Stream (Stream((:~)))
 import EFA.Utility.Async (concurrentlyMany_)
 
 import Control.Applicative (liftA2, pure)
 
+import qualified Data.FixedLength as FL
 import Data.Monoid (Monoid, mconcat, mempty)
 
 

@@ -26,7 +26,6 @@ import qualified EFA.Report.Format as Format
 import EFA.Report.FormatValue (FormatValue, formatValue)
 import EFA.Report.Format (Format)
 
-import qualified EFA.Utility.FixedLength as FixedLength
 import EFA.Utility.Async (concurrentlyMany_)
 
 import qualified Control.Monad.Exception.Synchronous as ME
@@ -35,6 +34,7 @@ import System.Exit (exitFailure)
 
 import qualified Data.Foldable as Fold
 import qualified Data.List.HT as ListHT
+import qualified Data.FixedLength as FixedLength
 import qualified Data.NonEmpty as NonEmpty
 import Control.Monad (when)
 import Control.Applicative (liftA2)

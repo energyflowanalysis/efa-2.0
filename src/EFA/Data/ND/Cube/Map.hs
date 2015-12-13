@@ -16,12 +16,12 @@ import qualified EFA.Signal.Data as SD
 import qualified EFA.Reference.Base as Ref
 import EFA.Data.Interpolation as Interp
 
-import qualified EFA.Utility.FixedLength as FL
 import EFA.Utility(Caller,merror,(|>),ModuleName(..),FunctionName, genCaller)
 import EFA.Utility.Trace(mytrace)
 
 import qualified Data.Map as Map
 import qualified Data.Foldable as Fold
+import qualified Data.FixedLength as FL
 import qualified Data.NonEmpty as NonEmpty
 import Data.Maybe(fromMaybe)
 

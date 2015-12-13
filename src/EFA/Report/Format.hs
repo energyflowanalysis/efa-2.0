@@ -2,10 +2,10 @@ module EFA.Report.Format where
 
 import qualified EFA.Equation.RecordIndex as RecIdx
 import qualified EFA.Equation.Mix as Mix
-import qualified EFA.Utility.FixedLength as FixedLength
 
 import qualified Data.Char.Small as SmallChar
 import qualified Data.Char.Number as NumberChar
+import qualified Data.FixedLength as FixedLength
 import qualified Data.NonEmpty as NonEmpty
 import qualified Data.Map as Map
 import Data.Map (Map)

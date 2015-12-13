@@ -10,9 +10,8 @@ import EFA.Equation.Arithmetic (Sum, (~-), Constant, zero)
 import qualified EFA.Report.Format as Format
 import EFA.Report.FormatValue (FormatValue, formatValue)
 
-import qualified EFA.Utility.FixedLength as FixedLength
-
 import qualified Data.Accessor.Basic as Accessor
+import qualified Data.FixedLength as FixedLength
 import qualified Data.NonEmpty.Class as NonEmptyC
 import qualified Data.NonEmpty as NonEmpty
 import qualified Data.Map as Map

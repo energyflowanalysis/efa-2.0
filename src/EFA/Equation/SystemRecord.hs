@@ -16,7 +16,6 @@ import EFA.Equation.Arithmetic
            Integrate, Scalar, integrate,
            Scale, scale)
 
-import qualified EFA.Utility.FixedLength as FixedLength
 import EFA.Utility ((>>!))
 
 import qualified UniqueLogic.ST.TF.Expression as Expr
@@ -26,6 +25,7 @@ import UniqueLogic.ST.TF.Expression ((=:=))
 
 import Control.Applicative (Applicative, pure, liftA2)
 
+import qualified Data.FixedLength as FixedLength
 import qualified Data.NonEmpty as NonEmpty
 import qualified Data.Foldable as Fold
 import qualified Data.Monoid.HT as MonoidHT

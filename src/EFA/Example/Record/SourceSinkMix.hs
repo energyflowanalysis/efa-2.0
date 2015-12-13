@@ -3,7 +3,7 @@ module EFA.Example.Record.SourceSinkMix where
 import qualified EFA.Equation.RecordIndex as RecIdx
 import qualified EFA.Equation.Record as Record
 
-import qualified EFA.Utility.FixedLength as FL
+import qualified Data.FixedLength as FL
 
 
 
