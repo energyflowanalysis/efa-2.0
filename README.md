@@ -9,7 +9,9 @@ The Code is based on ideas and principles developed by Philipp Guttenberg
 in his PhD-Thesis ("Der Autarke Hybrid am Prüfstand", 2004, TU-München, FZG)
 and ongoing career.
 The two inactive patent applications
-PCT/EP2009/063695, PCT/EP2013/003348 describe the method.
+PCT/EP2009/063695 (http://www.google.com/patents/WO2010043723A3),
+PCT/EP2013/003348 (http://www.google.com/patents/WO2014072054A1)
+describe the method.
 
 Due to the knowledge of Heinrich Hördegen
 (http://www.funktional.info/, Haskell Stammtisch München)
