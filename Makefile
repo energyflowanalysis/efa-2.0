@@ -15,12 +15,12 @@ trim:
 
 testgit:
 	(export EFA=$$PWD && cd /tmp/ && git clone $$EFA $(TESTDIR) &&
-	 cabal install --enable-documentation --disable-shared --disable-library-profiling $(TESTDIR)/ &&
+	 cabal install --enable-tests --enable-documentation --disable-shared --disable-library-profiling $(TESTDIR)/ &&
 	 rm -r $(TESTDIR)/)
 
 testgit-first:
 	(export EFA=$$PWD && cd /tmp/ && git clone $$EFA $(TESTDIR) && cd $(TESTDIR) && \
-	 cabal configure --disable-shared --disable-library-profiling)
+	 cabal configure --enable-tests --disable-shared --disable-library-profiling)
 	make testgit-run
 
 testgit-again:
