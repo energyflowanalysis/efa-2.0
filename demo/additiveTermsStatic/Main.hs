@@ -34,10 +34,8 @@ import qualified EFA.Symbolic.OperatorTree as Op
 import qualified EFA.Report.Format as Format
 import EFA.Report.FormatValue (formatValue)
 
-
 import qualified Data.Foldable as Fold
 import qualified Data.Map as Map
-import qualified Data.FixedLength as FL
 import qualified Data.NonEmpty as NonEmpty
 import qualified Data.Empty as Empty
 import Data.NonEmpty ((!:))
@@ -70,15 +68,15 @@ param2 = beforeDelta <&> beforeDelta  &> beforeDelta  &> extrudeStart
 
 absolute = NestedDelta.getAbsoluteRecord params
 
-params ::
-   (Arith.Sum a) =>
-   ParameterRecord FL.N3 RecMultiDelta a
+
+
+type List3 = NonEmpty.T (NonEmpty.T (NonEmpty.T Empty.T))
+
+params :: (Arith.Sum a) => ParameterRecord List3 RecMultiDelta a
 params =
    beforeDelta &&> beforeDelta &&> beforeDelta &&> NestedDelta.parameterStart
 
-absoluteRecord ::
-   (Arith.Sum x) =>
-   x -> RecMultiDelta (Result x)
+absoluteRecord :: (Arith.Sum x) => x -> RecMultiDelta (Result x)
 absoluteRecord = NestedDelta.absoluteRecord absolute
 
 

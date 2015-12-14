@@ -46,6 +46,8 @@ import qualified EFA.Utility.Stream as Stream
 import EFA.Utility.Stream (Stream((:~)))
 import EFA.Utility.Async (concurrentlyMany_)
 
+import Type.Data.Num.Unary.Literal (U1)
+
 import Control.Applicative (liftA2, pure)
 
 import qualified Data.FixedLength as FL
@@ -63,7 +65,7 @@ evar .= val  =
    evar EqSys..= Arith.fromRational val
 
 
-type SourceMix = Record.SourceMix FL.N1
+type SourceMix = Record.SourceMix U1
 
 sourceMixSystem0, sourceMixSystem1, sourceMixSystem2 ::
    EqSys.EquationSystem Verify.Ignore SourceMix Node s Double
@@ -130,7 +132,7 @@ sourceMixSolution2 =
       sourceMixSystem2
 
 
-type SinkMix = Record.SinkMix FL.N1
+type SinkMix = Record.SinkMix U1
 
 sinkMixSystem ::
    EqSys.EquationSystem Verify.Ignore SinkMix Node s Double

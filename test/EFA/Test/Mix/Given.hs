@@ -28,6 +28,8 @@ import qualified EFA.Report.Format as Format
 
 import EFA.Symbolic.SumProduct ( Term )
 
+import Type.Data.Num.Unary.Literal (U1, U2)
+
 import qualified Data.FixedLength as FL
 import Data.FixedLength ((!:))
 
@@ -72,8 +74,8 @@ numericGraph =
 
 
 type MixRecIdx =
-        RecIdx.ExtSourceMix (FL.WrapPos FL.N2)
-           (RecIdx.SinkMix (FL.WrapPos FL.N2))
+        RecIdx.ExtSourceMix (FL.Index U2)
+           (RecIdx.SinkMix (FL.Index U2))
 
 type Tracked = Pair.T (Symbol.Term Term MixRecIdx Node) Rational
 
@@ -126,7 +128,7 @@ partialEquations =
 
 infixl 1 #
 
-(#) :: a -> (a,a) -> Record.Mix dir FL.N1 a
+(#) :: a -> (a,a) -> Record.Mix dir U1 a
 (#) total (x,y) = Record.Mix total $ x !: y !: FL.end
 
 
@@ -134,7 +136,7 @@ infix 0 %=
 
 (%=) ::
    (Arith.Constant x, Verify.LocalVar mode x, FlowTopo.Lookup idx) =>
-   idx Node -> Record.SourceMix FL.N1 (Record.SinkMix FL.N1 Rational) ->
+   idx Node -> Record.SourceMix U1 (Record.SinkMix U1 Rational) ->
    EqSys.EquationSystem mode MultiMix Node s x
 evar %= val  =
    evar EqSys.%= fmap Arith.fromRational (Record.ExtMix val)

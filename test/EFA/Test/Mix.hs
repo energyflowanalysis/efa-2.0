@@ -28,14 +28,15 @@ import EFA.Report.Format (Format)
 
 import EFA.Utility.Async (concurrentlyMany_)
 
-import qualified Control.Monad.Exception.Synchronous as ME
-
 import System.Exit (exitFailure)
+
+import qualified Type.Data.Num.Unary as Unary
+
+import qualified Control.Monad.Exception.Synchronous as ME
 
 import qualified Data.Foldable as Fold
 import qualified Data.List.HT as ListHT
 import qualified Data.FixedLength as FixedLength
-import qualified Data.NonEmpty as NonEmpty
 import Control.Monad (when)
 import Control.Applicative (liftA2)
 import Data.Traversable (sequenceA)
@@ -96,18 +97,18 @@ minimalDeterminateness =
     return minimal
 
 
-foldAll :: (Foldable f) => (a -> Bool) -> f a -> All
+foldAll :: (Unary.Natural n) => (a -> Bool) -> FixedLength.T n a -> All
 foldAll f = foldMap (All . f)
 
-uniformMix :: (Foldable f, Ord a) => Record.Mix dir f a -> All
+uniformMix :: (Unary.Natural n, Ord a) => Record.Mix dir n a -> All
 uniformMix (Record.Mix s ps)  =  foldAll (s==) ps
 
-enclosingMix :: (Foldable f, Ord a) => Record.Mix dir f a -> All
+enclosingMix :: (Unary.Natural n, Ord a) => Record.Mix dir n a -> All
 enclosingMix (Record.Mix s ps) =
   All $
-  NonEmpty.minimum ps <= s  &&  s <= NonEmpty.maximum ps
+  FixedLength.minimum ps <= s  &&  s <= FixedLength.maximum ps
 
-boundedMix :: (Foldable f, Ord a) => Record.Mix dir f a -> All
+boundedMix :: (Unary.Natural n, Ord a) => Record.Mix dir n a -> All
 boundedMix (Record.Mix s ps)  =  foldAll (s>=) ps
 
 testDTime :: (Ord a) => MultiMix a -> All
@@ -117,8 +118,8 @@ testDTime m =
   foldMap uniformMix (sequenceA $ Record.getExtMix m)
 
 testSumsInner ::
-  (Ord a, FixedLength.C f0, Foldable f1) =>
-  FlowTopo.Sums (Record.ExtMix dir0 f0 (Record.Mix dir1 f1) a) -> All
+  (Ord a, Unary.Natural n0, Unary.Natural n1) =>
+  FlowTopo.Sums (Record.ExtMix dir0 n0 (Record.Mix dir1 n1) a) -> All
 testSumsInner
     (FlowTopo.Sums {
       FlowTopo.sumIn = sumIn,
@@ -129,7 +130,7 @@ testSumsInner
   foldMap (foldMap boundedMix . Record.getExtMix) sumIn
 
 transposeMix ::
-  (FixedLength.C len0, FixedLength.C len1) =>
+  (Unary.Natural len0, Unary.Natural len1) =>
   Record.ExtMix dir0 len0 (Record.Mix dir1 len1) a ->
   Record.ExtMix dir1 len1 (Record.Mix dir0 len0) a
 transposeMix =
@@ -142,8 +143,8 @@ testSums m =
   testSumsInner (fmap transposeMix m)
 
 testFlowInner ::
-  (Ord a, FixedLength.C f0, Foldable f1) =>
-  FlowTopo.Flow (Record.ExtMix dir0 f0 (Record.Mix dir1 f1) a) -> All
+  (Ord a, Unary.Natural n0, Unary.Natural n1) =>
+  FlowTopo.Flow (Record.ExtMix dir0 n0 (Record.Mix dir1 n1) a) -> All
 testFlowInner
     (FlowTopo.Flow {
       FlowTopo.flowXOut = xout,

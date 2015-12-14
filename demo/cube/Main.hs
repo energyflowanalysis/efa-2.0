@@ -21,7 +21,7 @@ import EFA.Data.Vector.Type (Edge)
 
 import qualified EFA.Data.Interpolation as Interp
 
-import qualified Data.FixedLength as FL
+import Type.Data.Num.Unary.Literal (U1, U2)
 import Data.FixedLength (end, (!:))
 
 import qualified Data.Vector as V
@@ -33,10 +33,10 @@ interpFunction ::
   Double -> Interp.Val Double
 interpFunction = Interp.dim1 "main" Interp.Linear Interp.ExtrapLinear
 
-dat1 :: a -> ND.Data FL.N1 a
+dat1 :: a -> ND.Data U1 a
 dat1 x = x!:end
 
-dat2 :: a -> a -> ND.Data FL.N2 a
+dat2 :: a -> a -> ND.Data U2 a
 dat2 x y = x!:y!:end
 
 main :: IO()
@@ -46,7 +46,7 @@ main = do
       x =  V.fromList ["x1", "x2"]
       y =  V.fromList ["y1","y2"]
   let z =  V.fromList ["z11","z12","z21","z22"]
-  let o :: Cube Edge FL.N2 String V.Vector String String
+  let o :: Cube Edge U2 String V.Vector String String
       o = Cube.create caller (dat2 ("x",x) ("y",y)) z
   let z11 = Cube.lookupLin caller o (Grid.LinIdx 0)
   let z12 = Cube.lookupLin caller o (Grid.LinIdx 1)
@@ -60,9 +60,9 @@ main = do
   let x1 = V.fromList [1,2]
   let y1 = V.fromList [3,4]
   let z1 = V.fromList [11,12,21,22]
-  let sys1 :: Grid Edge FL.N2 String V.Vector Double
+  let sys1 :: Grid Edge U2 String V.Vector Double
       sys1 = Grid.create caller (dat2 ("x",x1) ("y",y1))
-  let o1 :: Cube Edge FL.N2 String V.Vector Double Double
+  let o1 :: Cube Edge U2 String V.Vector Double Double
       o1 = Cube.create caller (dat2 ("x",x1) ("y",y1)) z1
   let zInt = Cube.interpolate caller interpFunction o1 (dat2 1 3)
   let zInt2 = Cube.interpolate caller interpFunction o1 (dat2 1 4)

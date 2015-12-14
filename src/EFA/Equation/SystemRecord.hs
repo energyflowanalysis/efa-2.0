@@ -26,8 +26,8 @@ import UniqueLogic.ST.TF.Expression ((=:=))
 
 import Control.Applicative (Applicative, pure, liftA2)
 
-import qualified Data.FixedLength as FixedLength
-import qualified Data.NonEmpty as NonEmpty
+import qualified Type.Data.Num.Unary as Unary
+
 import qualified Data.Foldable as Fold
 import qualified Data.Monoid.HT as MonoidHT
 import Data.Traversable (Traversable, sequenceA)
@@ -183,28 +183,28 @@ instance (Record rec) => Record (Record.ExtDelta rec) where
 
 
 newtype
-   MatchMixDir f a dir =
-      MatchMixDir {getMatchMixDir :: Record.Mix dir f a -> Bool}
+   MatchMixDir n a dir =
+      MatchMixDir {getMatchMixDir :: Record.Mix dir n a -> Bool}
 
 matchMixDir ::
    Mix.Direction dir =>
-   Maybe Idx.Direction -> Record.Mix dir f a -> Bool
+   Maybe Idx.Direction -> Record.Mix dir n a -> Bool
 matchMixDir dir =
    getMatchMixDir $
    Mix.switch
       (MatchMixDir $ \_ -> dir /= Just Idx.In)
       (MatchMixDir $ \_ -> dir /= Just Idx.Out)
 
-instance (Mix.Direction dir, FixedLength.C f) => Record (Record.Mix dir f) where
+instance (Mix.Direction dir, Unary.Natural n) => Record (Record.Mix dir n) where
 
    rules _ = mempty
 
-   mixSumRules (Record.Mix s (NonEmpty.Cons p ps)) =
-      System (s =:= Fold.foldl (~+) p (FixedLength.Wrap ps))
+   mixSumRules (Record.Mix s ps) =
+      System (s =:= Fold.foldl1 (~+) ps)
 
    mixLevelRules dir r@(Record.Mix s ps) =
       MonoidHT.when (matchMixDir dir r) $
-      foldMap (\p -> System (s =:= p)) (FixedLength.Wrap ps)
+      foldMap (\p -> System (s =:= p)) ps
 
    equalR recX recY =
       foldMap System $ liftA2 (=:=) recX recY
@@ -217,8 +217,8 @@ instance (Mix.Direction dir, FixedLength.C f) => Record (Record.Mix dir f) where
 
 
 instance
-   (Mix.Direction dir, Record rec, FixedLength.C f) =>
-      Record (Record.ExtMix dir f rec) where
+   (Mix.Direction dir, Record rec, Unary.Natural n) =>
+      Record (Record.ExtMix dir n rec) where
 
    rules (Record.ExtMix m) = foldMap rules m
 

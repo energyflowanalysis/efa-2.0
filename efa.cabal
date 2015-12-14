@@ -39,7 +39,8 @@ Library
     pretty ==1.1.*,
     random >=1.0 && <1.2,
     Stream >=0.4.6 && <0.5,
-    fixed-length >=0.1.1 && <0.2,
+    fixed-length >=0.2 && <0.3,
+    tfp >=1.0 && <1.1,
     non-empty >=0.2 && <0.4,
     comfort-graph >=0.0 && <0.1,
     bimap >=0.2.4 && <0.4,
@@ -223,8 +224,8 @@ Test-Suite test-efa
     QuickCheck,
     containers,
     explicit-exception,
+    tfp,
     fixed-length,
-    non-empty,
     utility-ht,
     vector,
     random,
@@ -437,7 +438,6 @@ Executable demo-additive-terms-static
     Build-Depends:
       efa,
       gnuplot,
-      fixed-length,
       non-empty,
       data-accessor,
       containers,
@@ -680,6 +680,7 @@ Executable demo-mix
   If flag(buildDemos)
     Build-Depends:
       efa,
+      tfp,
       fixed-length,
       base
   Else
@@ -705,10 +706,8 @@ Executable demo-cube
       efa,
       vector,
       containers,
+      tfp,
       fixed-length,
-      non-empty,
---      utility-ht,
---      gnuplot,
       base
   Else
     Buildable: False

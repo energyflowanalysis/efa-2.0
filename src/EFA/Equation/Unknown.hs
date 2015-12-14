@@ -4,7 +4,7 @@ import qualified EFA.Equation.Record as Record
 import qualified EFA.Equation.Mix as Mix
 import EFA.Equation.Result (Result(Undetermined))
 
-import qualified Data.FixedLength as FixedLength
+import qualified Type.Data.Num.Unary as Unary
 
 import Control.Applicative (Applicative, pure)
 
@@ -26,11 +26,11 @@ instance (Applicative rec, Unknown a) => Unknown (Record.ExtDelta rec a) where
    unknown = pure unknown
 
 instance
-   (Mix.Direction dir, FixedLength.C list, Unknown a) =>
-      Unknown (Record.Mix dir list a) where
+   (Mix.Direction dir, Unary.Natural n, Unknown a) =>
+      Unknown (Record.Mix dir n a) where
    unknown = pure unknown
 
 instance
-   (Mix.Direction dir, FixedLength.C list, Applicative rec, Unknown a) =>
-      Unknown (Record.ExtMix dir list rec a) where
+   (Mix.Direction dir, Unary.Natural n, Applicative rec, Unknown a) =>
+      Unknown (Record.ExtMix dir n rec a) where
    unknown = pure unknown

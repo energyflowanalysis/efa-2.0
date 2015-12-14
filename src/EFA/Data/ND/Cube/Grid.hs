@@ -7,6 +7,8 @@ import qualified EFA.Data.ND as ND
 import qualified EFA.Data.Axis.Strict as Axis
 import EFA.Utility(Caller,ModuleName(..),(|>),FunctionName, genCaller)
 
+import qualified Type.Data.Num.Unary as Unary
+
 import qualified Data.FixedLength as FL
 import qualified Data.Map as Map
 import qualified Data.Traversable as Trav
@@ -31,21 +33,21 @@ type DimIdx dim = ND.Data dim Axis.Idx
 newtype LinIdx = LinIdx {getInt:: Int} deriving (Show,Eq)
 
 toLinear ::
- (FL.C dim, DV.Storage vec a, DV.Length vec)=>
+ (Unary.Natural dim, DV.Storage vec a, DV.Length vec)=>
   Grid typ dim label vec a -> DimIdx dim -> LinIdx
 toLinear axes indices = LinIdx $
   Fold.foldl (\cum (ax, Axis.Idx idx) -> cum * Axis.len ax + idx) 0 $
-  FL.Wrap $ FL.zipWith (,) axes indices
+  FL.zipWith (,) axes indices
 
 fromLinear ::
-  (FL.C dim, DV.Storage vec a, DV.Length vec) =>
+  (Unary.Natural dim, DV.Storage vec a, DV.Length vec) =>
   Grid typ dim label vec a -> LinIdx -> DimIdx dim
 fromLinear axes (LinIdx idx) =
-  FL.unwrap $ fmap Axis.Idx $ snd $
-  Trav.mapAccumR (\r ax -> divMod r (Axis.len ax)) idx $ FL.Wrap axes
+  fmap Axis.Idx $ snd $
+  Trav.mapAccumR (\r ax -> divMod r (Axis.len ax)) idx axes
 
 create ::
-  (FL.C dim, Ord a,
+  (Unary.Natural dim, Ord a,
    DV.Zipper vec,
    DV.Storage vec a,
    DV.Storage vec Bool,
@@ -57,26 +59,25 @@ create caller = FL.map (uncurry $ Axis.fromVec newCaller)
 
 -- | generate a vector as linear listing of all coordinates in a grid
 toVector ::
-  (FL.C dim,
+  (Unary.Natural dim,
    DV.Storage vec (ND.Data dim a),
    DV.Storage vec a,
    DV.FromList vec) =>
   Grid typ dim label vec a ->
   vec (ND.Data dim a)
 toVector =
-  DV.fromList . map FL.unwrap .
-  Trav.traverse (DV.toList . Axis.getVec) . FL.Wrap
+  DV.fromList . Trav.traverse (DV.toList . Axis.getVec)
 
 -- | Get Sizes of alle Axes
 sizes ::
-  (FL.C dim, DV.Storage vec a, DV.Length vec) =>
+  (Unary.Natural dim, DV.Storage vec a, DV.Length vec) =>
   Grid typ dim label vec a -> ND.Data dim Int
 sizes = FL.map Axis.len
 
 
 -- | Remove axes of specified dimensions
 extract ::
-  (FL.C dim, FL.C dim2) =>
+  (Unary.Natural dim, Unary.Natural dim2) =>
   Caller ->
   Grid typ dim label vec a ->
   ND.Data dim2 ND.Idx ->
@@ -86,7 +87,7 @@ extract caller grid =
 
 -- | Generate a complete index room, but restrain index for dimension to be reduced to the specified value
 reductionIndexVector ::
-  (FL.C dim,
+  (Unary.Natural dim,
    DV.Walker vec,DV.Storage vec LinIdx,DV.Length vec,
    DV.Storage vec (ND.Data dim Axis.Idx),
    DV.Singleton vec,

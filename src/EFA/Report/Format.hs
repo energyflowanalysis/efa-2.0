@@ -3,10 +3,11 @@ module EFA.Report.Format where
 import qualified EFA.Equation.RecordIndex as RecIdx
 import qualified EFA.Equation.Mix as Mix
 
+import qualified Type.Data.Num.Unary as Unary
+
 import qualified Data.Char.Small as SmallChar
 import qualified Data.Char.Number as NumberChar
 import qualified Data.FixedLength as FixedLength
-import qualified Data.NonEmpty as NonEmpty
 import qualified Data.Map as Map
 import Data.Map (Map)
 import Data.Bool.HT (if')
@@ -84,7 +85,8 @@ class Format output where
    recordDelta :: RecIdx.Delta -> output -> output
    mixComponent :: output -> output -> output
    mixPair :: output -> output -> output
-   mix :: Foldable f => output -> NonEmpty.T f output -> output
+   mix :: Unary.Natural n =>
+      output -> FixedLength.T (Unary.Succ n) output -> output
    initial, exit :: output
    sectionNode :: output -> output -> output
    directionIn, directionOut :: output
@@ -382,10 +384,10 @@ class MixRecord len where
       (Mix.Direction dir, Format output) =>
       RecIdx.Mix dir len -> output -> output
 
-instance (FixedLength.C list) => MixRecord (FixedLength.WrapPos list) where
+instance (Unary.Natural n) => MixRecord (FixedLength.Index n) where
    mixRecord RecIdx.MixTotal = id
    mixRecord (RecIdx.MixComponent pos) =
-      mixComponent (integer $ fromIntegral $ FixedLength.numFromPos pos)
+      mixComponent (integer $ fromIntegral $ FixedLength.numFromIndex pos)
 
 instance (Mix.Direction dir, MixRecord len) => Record (RecIdx.Mix dir len) where
    record = mixRecord

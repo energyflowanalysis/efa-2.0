@@ -19,10 +19,12 @@ import EFA.Data.Interpolation as Interp
 import EFA.Utility(Caller,merror,(|>),ModuleName(..),FunctionName, genCaller)
 import EFA.Utility.Trace(mytrace)
 
+import qualified Type.Data.Num.Unary as Unary
+import Type.Data.Num.Unary.Literal (U1)
+
 import qualified Data.Map as Map
 import qualified Data.Foldable as Fold
 import qualified Data.FixedLength as FL
-import qualified Data.NonEmpty as NonEmpty
 import Data.Maybe(fromMaybe)
 
 
@@ -41,19 +43,19 @@ data Cube typ dim label vec a b = Cube {
   getData :: Data typ dim vec b }
 
 instance
-  (FL.C dim, Show label, Show (vec a), Show (vec b)) =>
+  (Unary.Natural dim, Show label, Show (vec a), Show (vec b)) =>
     Show (Cube typ dim label vec a b) where
   showsPrec p (Cube grid dat) =
     showParen (p>10) $
       showString "Cube " . FL.showsPrec 11 grid .
       showString " " . showsPrec 11 dat
 
-instance (FL.C dim, Show label, Ref.ToData (vec a), Ref.ToData (vec b)) =>
+instance (Unary.Natural dim, Show label, Ref.ToData (vec a), Ref.ToData (vec b)) =>
          Ref.ToData (Cube typ dim label vec a b) where
   toData (Cube grid dat) =
-    Ref.DoubleType "Cube" (Ref.toData $ FL.Wrap grid) (Ref.toData dat)
+    Ref.DoubleType "Cube" (Ref.toData grid) (Ref.toData dat)
 
-data Data typ (dim :: * -> *) vec a =
+data Data typ dim vec a =
   Data { getVector :: vec a} deriving (Show,Eq)
 
 instance (Ref.ToData (vec a)) => Ref.ToData (Data typ dim vec a) where
@@ -73,7 +75,7 @@ lookupLinUnsafe ::
 lookupLinUnsafe (Cube _ (Data vec)) (Grid.LinIdx idx) = DV.lookupUnsafe vec idx
 
 lookup ::
-  (FL.C dim,
+  (Unary.Natural dim,
    DV.LookupMaybe vec b,
    DV.Storage vec a, Show (vec b),
    DV.Length vec) =>
@@ -82,10 +84,10 @@ lookup caller idx cube@(Cube grid _) =
   lookupLin (caller |> nc "lookup") cube $ Grid.toLinear grid idx
 
 checkVector ::
-  (FL.C dim, DV.Storage vec b, DV.Length vec,DV.Storage vec a) =>
+  (Unary.Natural dim, DV.Storage vec b, DV.Length vec,DV.Storage vec a) =>
   Grid typ dim label vec a -> vec b -> Bool
 checkVector grid vec =
-  DV.length vec == Fold.product (FL.Wrap $ FL.map Strict.len grid)
+  DV.length vec == Fold.product (FL.map Strict.len grid)
 
 
 create ::
@@ -96,9 +98,9 @@ create ::
    DV.Singleton vec,
    DV.Storage vec b,
    DV.Length vec,
-   FL.C dim
+   Unary.Natural dim
   ) =>
-  Caller -> dim (label,vec a) -> vec b -> Cube typ dim label vec a b
+  Caller -> FL.T dim (label, vec a) -> vec b -> Cube typ dim label vec a b
 create caller xs vec =
   let grid = Grid.create caller xs
   in  if checkVector grid vec
@@ -108,7 +110,7 @@ create caller xs vec =
 
 
 generateWithGrid ::
-  (FL.C dim,
+  (Unary.Natural dim,
    DV.Walker vec,
    DV.Storage vec b,
    DV.Storage vec (ND.Data dim a),
@@ -121,7 +123,7 @@ generateWithGrid ::
 generateWithGrid f grid =  Cube grid $ Data $ DV.map f $ Grid.toVector grid
 
 map ::
-  (FL.C dim,
+  (Unary.Natural dim,
    DV.Walker vec,
    DV.Storage vec c,
    DV.Storage vec b) =>
@@ -130,7 +132,7 @@ map f (Cube grid (Data vec)) = (Cube grid $ Data $ DV.map f vec)
 
 
 mapWithGrid ::
- (FL.C dim,
+ (Unary.Natural dim,
   DV.Walker vec,
   DV.Storage vec c,DV.Storage vec (vec [a]), DV.FromList vec,
   DV.Zipper vec,
@@ -150,7 +152,7 @@ foldl ::(DV.Walker vec, DV.Storage vec b)=>
 foldl f acc (Cube _ (Data vec)) = DV.foldl f acc vec
 
 foldlWithGrid ::
-  (FL.C dim,
+  (Unary.Natural dim,
    DV.Walker vec,
    DV.Storage vec (vec [a]),
    DV.FromList vec,
@@ -189,27 +191,26 @@ zipWith caller f (Cube grid (Data vec)) (Cube grid1 (Data vec1)) =
 
 -- | Removes the first Dimension
 getSubCube ::
-  (FL.C dim,
+  (Unary.Natural dim,
    DV.Storage vec b, DV.Slice vec,
    DV.Storage vec a, DV.Length vec) =>
-  Cube typ (NonEmpty.T dim) label vec a b ->
+  Cube typ (Unary.Succ dim) label vec a b ->
   Strict.Idx -> Cube typ dim label vec a b
-getSubCube (Cube grid (Data vec)) (Strict.Idx idx) =
-    Cube (NonEmpty.tail grid) $ Data subVec
-  where subVec = DV.slice startIdx l vec
+getSubCube (Cube grid (Data vec)) (Strict.Idx idx) = Cube tl $ Data subVec
+  where (hd,tl) = FL.viewL grid
+        subVec = DV.slice startIdx l vec
         startIdx = mytrace 0 "getSubCube" "startIdx" $ idx*l
-        l = mytrace 0 "getSubCube" "l" $
-            Strict.len $ NonEmpty.head grid
+        l = mytrace 0 "getSubCube" "l" $ Strict.len hd
 
 newtype Interpolate label vec typ a b dim =
   Interpolate {
     runInterpolate ::
-      Cube typ (NonEmpty.T dim) label vec a b ->
-      ND.Data (NonEmpty.T dim) a -> Interp.Val b
+      Cube typ (Unary.Succ dim) label vec a b ->
+      ND.Data (Unary.Succ dim) a -> Interp.Val b
   }
 
 interpolate ::
-  (FL.C dim,
+  (Unary.Natural dim,
    Ord a,Arith.Constant b,DV.LookupMaybe vec b,
    DV.LookupUnsafe vec a,Show (vec b),(Show (vec a)),
    DV.Storage vec a,Show label,
@@ -218,12 +219,12 @@ interpolate ::
    DV.Storage vec b, DV.Slice vec) =>
   Caller ->
   ((a,a) -> (b,b) -> a -> Interp.Val b) ->
-  Cube typ (NonEmpty.T dim) label vec a b ->
-  ND.Data (NonEmpty.T dim) a ->
+  Cube typ (Unary.Succ dim) label vec a b ->
+  ND.Data (Unary.Succ dim) a ->
   Interp.Val b
 interpolate caller interpFunction =
   runInterpolate $
-  FL.switch
+  Unary.switchNat
     (Interpolate $ interpolate1 caller interpFunction)
     (Interpolate $ interpolateSucc caller interpFunction)
 
@@ -236,16 +237,16 @@ interpolate1 ::
    DV.Storage vec b, DV.Slice vec) =>
   Caller ->
   ((a,a) -> (b,b) -> a -> Interp.Val b) ->
-  Cube typ FL.N1 label vec a b ->
-  ND.Data FL.N1 a ->
+  Cube typ U1 label vec a b ->
+  ND.Data U1 a ->
   Interp.Val b
 interpolate1 caller interpFunction cube coordinates =
   interpolateGen interpFunction cube coordinates $ \idx ->
     Interp.Inter $
-    lookup (caller |> nc "interpolate1") (NonEmpty.singleton idx) cube
+    lookup (caller |> nc "interpolate1") (FL.singleton idx) cube
 
 interpolateSucc ::
-  (FL.C dim,
+  (Unary.Natural dim,
    Ord a,Arith.Constant b,DV.LookupMaybe vec b,
    DV.LookupUnsafe vec a,Show (vec b),(Show (vec a)),
    DV.Storage vec a,Show label,
@@ -254,16 +255,16 @@ interpolateSucc ::
    DV.Storage vec b, DV.Slice vec) =>
   Caller ->
   ((a,a) -> (b,b) -> a -> Interp.Val b) ->
-  Cube typ (ND.TwoMore dim) label vec a b ->
-  ND.Data (ND.TwoMore dim) a ->
+  Cube typ (FL.GE2 dim) label vec a b ->
+  ND.Data (FL.GE2 dim) a ->
   Interp.Val b
 interpolateSucc caller interpFunction cube coordinates =
   interpolateGen interpFunction cube coordinates $ \idx ->
     interpolate (caller |> nc "interpolateSucc") interpFunction
-      (getSubCube cube idx) (NonEmpty.tail coordinates)
+      (getSubCube cube idx) (FL.tail coordinates)
 
 interpolateGen ::
-  (FL.C dim,
+  (Unary.Natural dim,
    Ord a, Arith.Constant b,
    DV.LookupUnsafe vec a,
    DV.Storage vec a, Show (vec a),
@@ -271,43 +272,43 @@ interpolateGen ::
    DV.Length vec, DV.Find vec,
    Show label) =>
   ((a,a) -> (b,b) -> a -> Interp.Val b) ->
-  Cube typ (NonEmpty.T dim) label vec a b ->
-  ND.Data (NonEmpty.T dim) a ->
+  Cube typ (Unary.Succ dim) label vec a b ->
+  ND.Data (Unary.Succ dim) a ->
   (Strict.Idx -> Val b) ->
   Interp.Val b
 interpolateGen interpFunction cube coordinates f = Interp.combine3 y1 y2 y
   where
-    axis = mytrace 0 "interpolate" "axis" $ NonEmpty.head $
+    axis = mytrace 0 "interpolate" "axis" $ FL.head $
            getGrid $ mytrace 0 "interpolate" "cube" cube
-    x = NonEmpty.head coordinates
+    x = FL.head coordinates
     ((idx1,idx2),(x1,x2)) = Strict.getSupportPoints axis x
     y1 = f idx1; y2 = f idx2
     y = interpFunction (x1,x2) (Interp.unpack y1,Interp.unpack y2) x
 
-dimension :: FL.C dim => Cube typ dim label vec a b -> Int
+dimension :: Unary.Natural dim => Cube typ dim label vec a b -> Int
 dimension (Cube grid _) = length $ FL.toList grid
 
 to2DSignal ::
-    (FL.C dim,
+    (Unary.Natural dim,
      DV.Walker vec,
      DV.Storage vec (vec b),
      DV.Storage vec b,
      DV.Slice vec,
      DV.Storage vec a,
      DV.Length vec) =>
-    Cube typ (NonEmpty.T dim) label vec a b ->
+    Cube typ (Unary.Succ dim) label vec a b ->
     Sig.TC Sig.Signal t (SD.Data (vec :> vec :> Nil) b)
 to2DSignal (Cube grid (Data vec)) =
   Sig.TC $ SD.Data $ DV.imap f $ Strict.getVec axis
       where
-        axis = NonEmpty.head grid
+        axis = FL.head grid
         l = Strict.len axis
         f idx _ = DV.slice startIdx l vec
           where
             startIdx = mytrace 0 "getSubCube" "startIdx" $ idx*l
 
 extract ::
-  (FL.C dim, FL.C dim2,
+  (Unary.Natural dim, Unary.Natural dim2,
    DV.Walker vec,
    DV.Storage vec a,
    DV.Storage vec Strict.Idx,DV.LookupUnsafe vec b,
