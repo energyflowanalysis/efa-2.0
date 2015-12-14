@@ -10,7 +10,6 @@ import EFA.Report.Format (Format)
 import qualified Test.QuickCheck as QC
 import Control.Monad (liftM2)
 
-import qualified Prelude as P
 import Prelude hiding (init, flip, sum)
 
 

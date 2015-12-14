@@ -82,7 +82,6 @@ import Data.Traversable (traverse)
 import Data.Foldable (foldMap, fold)
 import Data.Monoid (mconcat, (<>))
 
-import qualified Prelude as P
 import Prelude hiding (lookup, init)
 
 

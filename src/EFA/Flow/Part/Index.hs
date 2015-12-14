@@ -4,7 +4,6 @@ import qualified EFA.Report.Format as Format
 
 import Data.Word (Word)
 
-import qualified Prelude as P
 import Prelude hiding (init, flip)
 
 newtype AbsoluteState = AbsoluteState Integer deriving (Show, Eq, Ord)

@@ -34,7 +34,6 @@ import Control.Monad.ST (ST)
 import Control.Monad (liftM, ap, when)
 import Control.Applicative (Applicative, pure, (<*>))
 
-import qualified Prelude as P
 import Prelude hiding (max, log)
 
 

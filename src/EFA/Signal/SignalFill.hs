@@ -20,7 +20,7 @@ import EFA.Signal.Typ (TSum, TProd)
 import EFA.Equation.Arithmetic (Sum, (~+), (~-), Product, (~*), (~/))
 
 import Data.Function (($))
-import qualified Prelude as P
+import Prelude ()
 
 
 

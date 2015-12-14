@@ -21,11 +21,8 @@ import qualified Data.Map as Map
 import EFA.Data.Vector as DV
 
 
-import qualified Prelude as P
 import Prelude hiding (zipWith, map, foldl)
---import Data.Maybe(fromMaybe)
 
---import EFA.Utility.Trace(mytrace)
 
 modul :: ModuleName
 modul = ModuleName "Data.Signal"

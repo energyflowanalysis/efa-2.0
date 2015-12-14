@@ -26,7 +26,6 @@ import qualified Data.NonEmpty as NonEmpty
 import Data.Maybe(fromMaybe)
 
 
-import qualified Prelude as P
 import Prelude hiding (zipWith, map, foldl, lookup)
 
 

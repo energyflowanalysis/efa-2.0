@@ -13,9 +13,6 @@ import qualified Data.Map as Map
 import Data.Foldable (fold)
 import Data.Maybe (fromMaybe, listToMaybe)
 
-import qualified Prelude as P
-import Prelude
-
 
 m :: ModuleName
 m = ModuleName "Space"

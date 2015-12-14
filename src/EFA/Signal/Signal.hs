@@ -61,7 +61,7 @@ import Prelude
           (Show, Read, Eq, Ord, Maybe, Bool, error, fmap,
            Enum, toEnum, fromEnum,
            String, (++),
-           Int, Double, (-), show,(==),(>=),(>), (<=),not,(&&),(||),Bool(True,False),Maybe(Just,Nothing))
+           Int, Double, (-), show,(==),(>=),(>), not,(&&),(||),Bool(True,False),Maybe(Just,Nothing))
 import qualified Prelude as P
 --import Data.Maybe(fromMaybe)
 --import qualified System.Random as Random

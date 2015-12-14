@@ -15,7 +15,6 @@ import qualified UniqueLogic.ST.TF.System as Sys
 
 import Control.Applicative (liftA, liftA2)
 
-import qualified Prelude as P
 import Prelude hiding (sqrt)
 
 

@@ -14,7 +14,6 @@ import EFA.Equation.Arithmetic
 import Data.Foldable (foldMap)
 import Data.Monoid ((<>))
 
-import qualified Prelude as P
 import Prelude hiding (sqrt)
 
 
