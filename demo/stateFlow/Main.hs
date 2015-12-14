@@ -9,7 +9,7 @@ import qualified EFA.Flow.Draw as Draw
 
 import EFA.Utility.Async (concurrentlyMany_)
 
-import Data.Monoid (Monoid, mempty)
+import Data.Monoid (mempty)
 
 
 main :: IO ()

@@ -15,7 +15,7 @@ import EFA.Equation.Result (Result)
 import qualified EFA.Utility.Stream as Stream
 import EFA.Utility.Stream (Stream((:~)))
 
-import Data.Monoid (Monoid, mconcat)
+import Data.Monoid (mconcat)
 
 
 sec0, sec1, sec2 :: Idx.Section

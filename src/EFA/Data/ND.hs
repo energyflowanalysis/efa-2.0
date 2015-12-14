@@ -10,7 +10,7 @@ import EFA.Utility(Caller,merror,ModuleName(..))
 import qualified Data.FixedLength as FL
 import qualified Data.NonEmpty as NonEmpty
 import qualified Data.Map as Map
-import Data.Foldable (Foldable, fold)
+import Data.Foldable (fold)
 import Data.Maybe (fromMaybe, listToMaybe)
 
 import qualified Prelude as P

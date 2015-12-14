@@ -17,7 +17,7 @@ import qualified UniqueLogic.ST.TF.Expression as Expr
 import qualified Data.NonEmpty as NonEmpty
 import Control.Applicative (pure)
 import Data.Foldable (Foldable, foldMap)
-import Data.Monoid (Monoid, mempty, (<>))
+import Data.Monoid (mempty, (<>))
 
 
 data Options mode rec s a =

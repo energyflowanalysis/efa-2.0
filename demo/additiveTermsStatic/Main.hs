@@ -32,7 +32,7 @@ import qualified EFA.Symbolic.SumProduct as SumProduct
 import qualified EFA.Symbolic.OperatorTree as Op
 
 import qualified EFA.Report.Format as Format
-import EFA.Report.FormatValue (FormatValue, formatValue)
+import EFA.Report.FormatValue (formatValue)
 
 
 import qualified Data.Foldable as Fold

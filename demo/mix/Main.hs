@@ -49,7 +49,7 @@ import EFA.Utility.Async (concurrentlyMany_)
 import Control.Applicative (liftA2, pure)
 
 import qualified Data.FixedLength as FL
-import Data.Monoid (Monoid, mconcat, mempty)
+import Data.Monoid (mconcat, mempty)
 
 
 infix 0 .=

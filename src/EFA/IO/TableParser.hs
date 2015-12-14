@@ -14,7 +14,7 @@ import Text.ParserCombinators.Parsec
           (Parser, skipMany, many, many1, endBy, sepEndBy1, between,
            noneOf, oneOf, char, string, eof, lookAhead, parse, (<|>))
 
-import Control.Applicative (Applicative, liftA, liftA2, (*>), (<*))
+import Control.Applicative (liftA, liftA2, (*>), (<*))
 import Control.Monad (forM_, void)
 
 

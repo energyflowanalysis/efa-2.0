@@ -11,7 +11,7 @@ import EFA.Flow.SequenceState.Variable ((<#>))
 import qualified EFA.Utility.Map as MapU
 import EFA.Utility.Map (Caller)
 
-import Control.Applicative (Applicative, pure, (<*>))
+import Control.Applicative (pure, (<*>))
 
 import qualified Data.Map as Map
 import Data.Traversable (Traversable, traverse, foldMapDefault)

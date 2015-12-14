@@ -45,7 +45,7 @@ import EFA.Signal.Signal (TC, toSigList, getDisplayType)
 import EFA.Signal.Data (Data, (:>), Nil, NestedList)
 
 import qualified EFA.Equation.Arithmetic as Arith
-import EFA.Equation.Arithmetic (Sum, Product, (~*), Constant)
+import EFA.Equation.Arithmetic (Sum, (~*), Constant)
 
 import qualified EFA.Graph.Topology.Node as Node
 

@@ -13,7 +13,7 @@ import qualified EFA.Graph as Graph
 
 import EFA.Utility.Async (concurrentlyMany_)
 
-import Data.Monoid (Monoid, mempty)
+import Data.Monoid (mempty)
 
 
 main :: IO ()

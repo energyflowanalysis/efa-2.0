@@ -38,7 +38,7 @@ import Control.Applicative (Applicative, pure, liftA, liftA2)
 
 import qualified Data.NonEmpty as NonEmpty
 
-import Data.Traversable (Traversable, sequenceA, for)
+import Data.Traversable (sequenceA, for)
 import Data.Foldable (foldMap)
 import Data.Monoid (Monoid, (<>), mempty, mappend)
 

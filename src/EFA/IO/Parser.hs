@@ -7,7 +7,7 @@ import qualified Data.Stream as Stream
 import qualified Data.NonEmpty as NonEmpty
 import Data.Traversable (Traversable, sequenceA)
 
-import Control.Applicative (Applicative, liftA2, (<*), (<$))
+import Control.Applicative (liftA2, (<*), (<$))
 import Control.Monad.HT (void)
 
 import EFA.Utility (zipWithTraversable)

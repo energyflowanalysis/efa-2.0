@@ -73,14 +73,14 @@ import Control.Monad.Trans.Writer (runWriterT)
 
 import Control.Monad.ST (ST, runST)
 
-import Control.Applicative (Applicative, pure, liftA2)
+import Control.Applicative (pure, liftA2)
 
 import qualified Data.Map as Map
 
 import Data.Map (Map)
-import Data.Traversable (Traversable, traverse)
+import Data.Traversable (traverse)
 import Data.Foldable (foldMap, fold)
-import Data.Monoid (Monoid, (<>), mconcat)
+import Data.Monoid (mconcat, (<>))
 
 import qualified Prelude as P
 import Prelude hiding (lookup, init)

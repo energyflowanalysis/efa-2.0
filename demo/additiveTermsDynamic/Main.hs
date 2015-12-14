@@ -26,7 +26,7 @@ import qualified EFA.Equation.Arithmetic as Arith
 import EFA.Equation.Stack (Stack)
 
 import qualified EFA.Report.Format as Format
-import EFA.Report.FormatValue (FormatValue, formatValue)
+import EFA.Report.FormatValue (formatValue)
 
 import qualified Data.Map as Map
 import Data.Monoid (mempty, (<>))

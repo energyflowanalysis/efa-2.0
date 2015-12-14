@@ -35,7 +35,7 @@ import qualified EFA.Signal.Vector as SV
 
 import Control.Applicative (liftA2)
 
-import Data.Foldable (Foldable, foldMap)
+import Data.Foldable (foldMap)
 
 
 etaSys ::
