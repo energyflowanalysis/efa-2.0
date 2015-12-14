@@ -35,25 +35,31 @@ type
          (RecIdx.Record recIdx (Var.Scalar (Part var) node))
          (RecIdx.Record recIdx (Var.Signal (Part var) node))
 
+
+type family Variable (term :: (* -> *) -> * -> * -> *) part :: * -> *
+
 class (var ~ Variable (Term var) (Part var)) => Symbol var where
    type Term var :: (* -> *) -> * -> * -> *
    type Part var :: *
-   type Variable term part :: * -> *
    symbol ::
       Pointed term =>
       RecIdx.Record recIdx (var node) ->
       VarTerm var term recIdx node
 
+
+type instance Variable Term.Signal part = Var.Signal part
+
 instance Symbol (Var.Signal part) where
    type Term (Var.Signal part) = Term.Signal
    type Part (Var.Signal part) = part
-   type Variable Term.Signal part = Var.Signal part
    symbol = Term.Signal . point
+
+
+type instance Variable Term.Scalar part = Var.Scalar part
 
 instance Symbol (Var.Scalar part) where
    type Term (Var.Scalar part) = Term.Scalar
    type Part (Var.Scalar part) = part
-   type Variable Term.Scalar part = Var.Scalar part
    symbol = Term.Scalar . point . Term.ScalarVariable
 
 

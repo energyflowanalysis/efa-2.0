@@ -174,40 +174,49 @@ instance (FixedLength.C f, Traversable rec) => Traversable (ExtMix dir f rec) wh
    sequenceA (ExtMix m) = fmap ExtMix $ traverse sequenceA m
 
 
+type family FromIndex idx :: * -> *
+
 class
    (Ord (ToIndex rec), Functor rec, Format.Record (ToIndex rec),
     rec ~ FromIndex (ToIndex rec)) =>
       C rec where
    type ToIndex rec :: *
-   type FromIndex idx :: * -> *
    access :: (idx ~ ToIndex rec) => idx -> Accessor.T (rec a) a
+
+
+type instance FromIndex RecIdx.Absolute = Absolute
 
 instance C Absolute where
    type ToIndex Absolute = RecIdx.Absolute
-   type FromIndex RecIdx.Absolute = Absolute
    access RecIdx.Absolute = Accessor.fromWrapper Absolute unAbsolute
+
+
+type instance FromIndex RecIdx.Delta = Delta
 
 instance C Delta where
    type ToIndex Delta = RecIdx.Delta
-   type FromIndex RecIdx.Delta = Delta
    access idx =
       case idx of
          RecIdx.Delta  -> Accessor.fromSetGet (\a d -> d{delta  = a}) delta
          RecIdx.Before -> Accessor.fromSetGet (\a d -> d{before = a}) before
          RecIdx.After  -> Accessor.fromSetGet (\a d -> d{after  = a}) after
 
+
+type instance FromIndex (RecIdx.ExtDelta idx) = ExtDelta (FromIndex idx)
+
 instance C rec => C (ExtDelta rec) where
    type ToIndex (ExtDelta rec) = RecIdx.ExtDelta (ToIndex rec)
-   type FromIndex (RecIdx.ExtDelta idx) = ExtDelta (FromIndex idx)
 
    access (RecIdx.ExtDelta idx sub) =
       access sub . access idx . accessExtDelta
 
+
+type instance
+   FromIndex (RecIdx.Mix dir (FixedLength.WrapPos (NonEmpty.T f))) = Mix dir f
+
 instance (Mix.Direction dir, FixedLength.C f) => C (Mix dir f) where
    type ToIndex (Mix dir f) =
            RecIdx.Mix dir (FixedLength.WrapPos (NonEmpty.T f))
-   type FromIndex (RecIdx.Mix dir (FixedLength.WrapPos (NonEmpty.T f))) =
-           Mix dir f
    access idx =
       case idx of
          RecIdx.MixTotal -> Accessor.fromSetGet (\a m -> m{total = a}) total
@@ -216,13 +225,16 @@ instance (Mix.Direction dir, FixedLength.C f) => C (Mix dir f) where
                (\a m -> m{mix = FixedLength.update (const a) k $ mix m})
                (FixedLength.index k . mix)
 
+
+type instance
+   FromIndex (RecIdx.ExtMix dir (FixedLength.WrapPos (NonEmpty.T f)) idx) =
+      ExtMix dir f (FromIndex idx)
+
 instance
    (Mix.Direction dir, FixedLength.C f, C rec) =>
       C (ExtMix dir f rec) where
    type ToIndex (ExtMix dir f rec) =
            RecIdx.ExtMix dir (FixedLength.WrapPos (NonEmpty.T f)) (ToIndex rec)
-   type FromIndex (RecIdx.ExtMix dir (FixedLength.WrapPos (NonEmpty.T f)) idx) =
-           ExtMix dir f (FromIndex idx)
 
    access (RecIdx.ExtMix idx sub) =
       access sub . access idx . accessExtMix
