@@ -1,6 +1,7 @@
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE DeriveTraversable #-}
 module EFA.Equation.SystemRecord where
 
 import qualified EFA.Flow.Topology.Index as Idx
