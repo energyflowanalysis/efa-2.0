@@ -18,7 +18,7 @@ module EFA.Flow.Sequence.Quantity (
    traverseStorages,
    traverseSequence,
 
-   foldMap,
+   EFA.Flow.Sequence.Quantity.foldMap,
    fold,
 
    toAssignMap,
@@ -404,7 +404,7 @@ formatAssigns ::
    (Node.C node, FormatValue a, FormatValue v, Format output) =>
    Graph node a v -> [output]
 formatAssigns =
-   foldMap (:[]) (:[]) .
+   EFA.Flow.Sequence.Quantity.foldMap (:[]) (:[]) .
    mapGraphWithVar formatAssign formatAssign
 
 foldMap ::
