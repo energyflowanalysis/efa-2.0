@@ -415,19 +415,15 @@ instance (SV.Walker v2, Fold v1) => Fold (v2 :> v1) where
 
 
 foldl1d ::
-   (SV.Walker v2, SV.Storage v2 (Apply v1 d1), SV.Storage v2 (Apply v1 d2)) =>
-   (Apply v1 d1 -> Apply v1 d2 -> Apply v1 d1) ->
-   Apply v1 d1 ->
-   Data (v2 :> v1) d2 ->
-   Apply v1 d1
+   (SV.Walker v2, SV.Storage v2 (Apply v1 d2)) =>
+   (a -> Apply v1 d2 -> a) ->
+   a -> Data (v2 :> v1) d2 -> a
 foldl1d f x (Data y) = SV.foldl f x y
 
 foldr1d ::
-   (SV.Walker v2, SV.Storage v2 (Apply v1 d1), SV.Storage v2 (Apply v1 d2)) =>
-   (Apply v1 d1 -> Apply v1 d2 -> Apply v1 d2) ->
-   Apply v1 d2 ->
-   Data (v2 :> v1) d1 ->
-   Apply v1 d2
+   (SV.Walker v2, SV.Storage v2 (Apply v1 d1)) =>
+   (Apply v1 d1 -> a -> a) ->
+   a -> Data (v2 :> v1) d1 -> a
 foldr1d f x (Data y) = SV.foldr f x y
 
 
