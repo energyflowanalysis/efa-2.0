@@ -137,7 +137,7 @@ evar ?= val  =
 
 
 newtype
-   Lookup rec node s a v idx typ =
+   Lookup rec node mode s a v idx typ =
       Lookup {
          getLookup ::
             (StateFlow.TypeOf idx ~ typ) =>
