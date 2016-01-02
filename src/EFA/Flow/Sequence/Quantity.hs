@@ -18,7 +18,7 @@ module EFA.Flow.Sequence.Quantity (
    traverseStorages,
    traverseSequence,
 
-   EFA.Flow.Sequence.Quantity.foldMap,
+   foldMap,
    fold,
 
    toAssignMap,

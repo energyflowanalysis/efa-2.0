@@ -35,7 +35,7 @@ module EFA.Flow.Cumulated.Quantity (
 
    Lookup, lookup,
 
-   fold, EFA.Flow.Cumulated.Quantity.foldMap,
+   fold, foldMap,
    ) where
 
 import qualified EFA.Flow.Cumulated.Variable as CumVar

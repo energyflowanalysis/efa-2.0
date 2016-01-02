@@ -41,7 +41,7 @@ module EFA.Flow.Topology.Quantity (
    Lookup, lookup,
 
    fold, foldDir,
-   EFA.Flow.Topology.Quantity.foldMap, foldMapDir,
+   foldMap, foldMapDir,
    ) where
 
 import qualified EFA.Flow.Topology.Variable as Var

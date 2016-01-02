@@ -55,7 +55,8 @@ Library
     unicode >=0.0 && <0.1,
     parsec >=3.1 && <3.2,
     pathtype >=0.7 && <0.8,
-    base >=4.5 && <4.9
+    base-noprelude >=4.5 && <4.9,
+    prelude2010 ==0.*
   Hs-Source-Dirs:      src
   GHC-Options: -Wall -fwarn-incomplete-uni-patterns -fwarn-tabs
   Exposed-Modules:
@@ -230,7 +231,8 @@ Test-Suite test-efa
     vector,
     random,
     template-haskell >=2.7 && <2.11,
-    base
+    base-noprelude,
+    prelude2010
   Other-Modules:
     EFA.Test.Signal
     EFA.Test.Sweep
@@ -255,7 +257,8 @@ Executable example-sequence-flow-graph
     Build-Depends:
       efa,
       utility-ht,
-      base
+      base-noprelude,
+      prelude2010
   Else
     Buildable: False
 
@@ -269,7 +272,8 @@ Executable example-optimising-storage
       vector,
       data-accessor,
       utility-ht,
-      base
+      base-noprelude,
+      prelude2010
   Else
     Buildable: False
 
@@ -291,7 +295,8 @@ Executable example-vehicle
       containers,
       non-empty,
       filepath,
-      base
+      base-noprelude,
+      prelude2010
   Else
     Buildable: False
 
@@ -316,9 +321,10 @@ Executable example-energy
       time,
       text,
       directory,
-      base,
       random,
-      bimap
+      bimap,
+      base-noprelude,
+      prelude2010
   Else
     Buildable: False
 
@@ -329,7 +335,8 @@ Executable example-time
     Build-Depends:
       efa,
       utility-ht,
-      base
+      base-noprelude,
+      prelude2010
   Else
     Buildable: False
 
@@ -341,7 +348,8 @@ Executable example-two-ways
       efa,
       gnuplot,
       utility-ht,
-      base
+      base-noprelude,
+      prelude2010
   Else
     Buildable: False
 
@@ -354,7 +362,8 @@ Executable demo-numeric-solving
     Build-Depends:
       efa,
       graphviz,
-      base
+      base-noprelude,
+      prelude2010
   Else
     Buildable: False
 
@@ -364,7 +373,8 @@ Executable demo-signal-solving
   If flag(buildDemos)
     Build-Depends:
       efa,
-      base
+      base-noprelude,
+      prelude2010
   Else
     Buildable: False
 
@@ -376,7 +386,8 @@ Executable demo-unknown-signal
       efa,
       gnuplot,
       containers,
-      base
+      base-noprelude,
+      prelude2010
   Else
     Buildable: False
 
@@ -391,7 +402,8 @@ Executable demo-tables
       gnuplot,
       non-empty,
       containers,
-      base
+      base-noprelude,
+      prelude2010
   Else
     Buildable: False
 
@@ -403,7 +415,8 @@ Executable demo-symbolic-solving
   If flag(buildDemos)
     Build-Depends:
       efa,
-      base
+      base-noprelude,
+      prelude2010
   Else
     Buildable: False
 
@@ -413,7 +426,8 @@ Executable demo-symbolic-delta
   If flag(buildDemos)
     Build-Depends:
       efa,
-      base
+      base-noprelude,
+      prelude2010
   Else
     Buildable: False
 
@@ -427,7 +441,8 @@ Executable demo-additive-terms-dynamic
       non-empty,
       containers,
       utility-ht,
-      base
+      base-noprelude,
+      prelude2010
   Else
     Buildable: False
 
@@ -442,7 +457,8 @@ Executable demo-additive-terms-static
       data-accessor,
       containers,
       utility-ht,
-      base
+      base-noprelude,
+      prelude2010
   Else
     Buildable: False
 
@@ -455,7 +471,8 @@ Executable demo-signal-calc
       efa,
       gnuplot,
       utility-ht,
-      base
+      base-noprelude,
+      prelude2010
   Else
     Buildable: False
 
@@ -469,7 +486,8 @@ Executable demo-sequence
       containers,
       utility-ht,
       gnuplot,
-      base
+      base-noprelude,
+      prelude2010
   Else
     Buildable: False
 
@@ -483,7 +501,8 @@ Executable demo-add-zerocrossings
       containers,
       utility-ht,
       gnuplot,
-      base
+      base-noprelude,
+      prelude2010
   Else
     Buildable: False
 
@@ -496,7 +515,8 @@ Executable demo-slice-signals-alt
       containers,
       utility-ht,
       gnuplot,
-      base
+      base-noprelude,
+      prelude2010
   Else
     Buildable: False
 
@@ -509,7 +529,8 @@ Executable demo-slice-signals
       containers,
       utility-ht,
       gnuplot,
-      base
+      base-noprelude,
+      prelude2010
   Else
     Buildable: False
 
@@ -522,7 +543,8 @@ Executable demo-slice-zerocross-signals
       containers,
       utility-ht,
       gnuplot,
-      base
+      base-noprelude,
+      prelude2010
   Else
     Buildable: False
 
@@ -532,7 +554,8 @@ Executable demo-undir-edge
   If flag(buildDemos)
     Build-Depends:
       efa,
-      base
+      base-noprelude,
+      prelude2010
   Else
     Buildable: False
 
@@ -543,7 +566,8 @@ Executable demo-csv-import
     Build-Depends:
       efa,
       utility-ht,
-      base
+      base-noprelude,
+      prelude2010
   Else
     Buildable: False
 
@@ -553,7 +577,8 @@ Executable demo-plt-import
   If flag(buildDemos)
     Build-Depends:
       efa,
-      base
+      base-noprelude,
+      prelude2010
   Else
     Buildable: False
 
@@ -563,7 +588,8 @@ Executable demo-ascii-import
   If flag(buildDemos)
     Build-Depends:
       efa,
-      base
+      base-noprelude,
+      prelude2010
   Else
     Buildable: False
 
@@ -573,7 +599,8 @@ Executable demo-ratio
   If flag(buildDemos)
     Build-Depends:
       efa,
-      base
+      base-noprelude,
+      prelude2010
   Else
     Buildable: False
 
@@ -583,8 +610,9 @@ Executable demo-pretty
   If flag(buildDemos)
     Build-Depends:
       efa,
-      base,
-      containers
+      containers,
+      base-noprelude,
+      prelude2010
   Else
     Buildable: False
 
@@ -594,8 +622,9 @@ Executable demo-node-definition
   If flag(buildDemos)
     Build-Depends:
       efa,
-      base,
-      containers
+      containers,
+      base-noprelude,
+      prelude2010
   Else
     Buildable: False
 
@@ -603,11 +632,12 @@ Executable demo-state-analysis
   Main-Is: demo/stateAnalysis/Main.hs
   GHC-Options: -Wall -fwarn-incomplete-uni-patterns -fwarn-tabs -fwarn-missing-import-lists
   If flag(buildDemos)
-     Build-Depends:
-       efa,
-       utility-ht,
-       containers,
-       base
+    Build-Depends:
+      efa,
+      utility-ht,
+      containers,
+      base-noprelude,
+      prelude2010
   Else
     Buildable: False
 
@@ -615,9 +645,10 @@ Executable demo-function-eta
   Main-Is: demo/functionEta/Main.hs
   GHC-Options: -Wall -fwarn-incomplete-uni-patterns -fwarn-tabs -fwarn-missing-import-lists
   If flag(buildDemos)
-     Build-Depends:
-       efa,
-       base
+    Build-Depends:
+      efa,
+      base-noprelude,
+      prelude2010
   Else
     Buildable: False
 
@@ -625,9 +656,10 @@ Executable demo-lookup-eta
   Main-Is: demo/lookupEta/Main.hs
   GHC-Options: -Wall -fwarn-incomplete-uni-patterns -fwarn-tabs -fwarn-missing-import-lists
   If flag(buildDemos)
-     Build-Depends:
-       efa,
-       base
+    Build-Depends:
+      efa,
+      base-noprelude,
+      prelude2010
   Else
     Buildable: False
 
@@ -637,7 +669,8 @@ Executable demo-delta-logic
   If flag(buildDemos)
     Build-Depends:
       efa,
-      base
+      base-noprelude,
+      prelude2010
   Else
     Buildable: False
 
@@ -647,7 +680,8 @@ Executable demo-cumulated-flow
   If flag(buildDemos)
     Build-Depends:
       efa,
-      base
+      base-noprelude,
+      prelude2010
   Else
     Buildable: False
 
@@ -657,7 +691,8 @@ Executable demo-state-flow
   If flag(buildDemos)
     Build-Depends:
       efa,
-      base
+      base-noprelude,
+      prelude2010
   Else
     Buildable: False
 
@@ -669,7 +704,8 @@ Executable demo-state-flow
 --    Build-Depends:
 --      efa,
 --      containers,
---      base
+--      base-noprelude,
+--      prelude2010
 --  Else
 --    Buildable: False
 
@@ -682,7 +718,8 @@ Executable demo-mix
       efa,
       tfp,
       fixed-length,
-      base
+      base-noprelude,
+      prelude2010
   Else
     Buildable: False
 
@@ -694,7 +731,8 @@ Executable demo-arithmetic
       efa,
       containers,
       vector,
-      base
+      base-noprelude,
+      prelude2010
   Else
     Buildable: False
 
@@ -708,6 +746,7 @@ Executable demo-cube
       containers,
       tfp,
       fixed-length,
-      base
+      base-noprelude,
+      prelude2010
   Else
     Buildable: False
