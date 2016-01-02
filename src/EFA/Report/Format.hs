@@ -13,7 +13,7 @@ import Data.Map (Map)
 import Data.Bool.HT (if')
 import Data.List (intercalate)
 import Data.Ratio (Ratio, numerator, denominator)
-import Data.Foldable (Foldable, foldr1)
+import Data.Foldable (foldr1)
 import Data.Maybe (fromMaybe)
 
 import Text.Printf (PrintfArg, printf)
